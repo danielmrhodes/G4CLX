@@ -31,7 +31,7 @@ private:
   //Check overlaps
   G4UIcmdWithoutParameter* check_cmd;
   
-  //Tigress commands
+  //SeGA commands
   G4UIcmdWithoutParameter* placeSega_cmd;
   
   //S3 commands

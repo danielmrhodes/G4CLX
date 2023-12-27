@@ -70,12 +70,9 @@ The /Geometry commands are common across all modes. All /Geometry commands are o
 
 | Command | Description |
 | --- | --- |
-| /Geometry/Tigress/Construct | Include the Tigress array in the simulation |
+| /Geometry/SeGA/Construct | Include SeGA in the simulation |
 | /Geometry/S3/Construct | Include the silicon detectors in the simulation |
 | /Geometry/Target/Construct | Include the target in the simulation |
-| /Geometry/Tigress/Configuration *int* | Set whether Tigress is in its high efficiency (0) or high peak-to-total (1) configuration (default: 0) |
-| /Geometry/Tigress/FrameConfiguration *int* | Set the Tigress frame configuration. See text below for an explanation (default: 0) |
-| /Geometry/Tigress/RemovePosition *int* |Remove a Tigress detector (clover) from the simulation |
 | /Geometry/S3/UpstreamOffset *double unit* | Set (positive) z-offset of upstream silicon detector. (Default: 3 cm) |
 | /Geometry/S3/DownstreamOffset *double unit* | Set (positive) z-offset of downstream silicon detector. (Default: 3 cm) |
 | /Geometry/Target/StandardTarget *string* | Set parameters for a standard target: 208Pb, 48Ti, 196Pt, 197Au, or 110Pd. |
@@ -89,8 +86,6 @@ The /Geometry commands are common across all modes. All /Geometry commands are o
 | /Geometry/CheckOverlaps | Check for overlapping physical volumes. |
 
 The various /Construct commands are mandatory if you want to include that particular piece of the setup in the simulation.
-
-The /Geometry/Tigress/SetFrameConfiguration has four possible parameters, 0-3. Choose 0 for the full structure, 1 for the corona plus upstream lampshade, 2 for the corona plus downstream lampshade, or 3 for only the corona. The appropriate Tigress detectors will be automatically removed from the simulation if you choose a non-zero frame configuration.
 
 Note that the /Geometry/Target/ commands do **NOT** define the recoiling nucleus for the kinematics or excitation, it only defines "bulk" material properties of the target.
 
