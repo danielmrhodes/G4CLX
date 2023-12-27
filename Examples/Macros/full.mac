@@ -1,7 +1,5 @@
 /Mode Full
-/Geometry/Tigress/Construct
-/Geometry/Tigress/Configuration 1
-/Geometry/Tigress/FrameConfiguration 0
+/Geometry/SeGA/Construct
 /Geometry/S3/Construct
 /Geometry/S3/UpstreamOffset 3.0 cm
 /Geometry/S3/DownstreamOffset 3.0 cm
@@ -26,9 +24,10 @@
 /Excitation/Recoil/Probabilities Examples/Probabilities/ti48_by_cd106.prb
 /Excitation/Recoil/StatisticalTensors Examples/StatisticalTensors/ti48_by_cd106.ten
 #
+/Output/OnlyWriteCoincidences
 /Output/FileName full.dat
 /Output/WriteDiagnostics
-/Output/OnlyWriteCoincidences
+/Output/DiagnosticsFileName info.dat
 #
 /run/numberOfThreads 6
 /run/beamOn 10000000

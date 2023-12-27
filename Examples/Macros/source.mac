@@ -1,7 +1,5 @@
 /Mode Source
-/Geometry/Tigress/Construct
-/Geometry/Tigress/Configuration 1
-/Geometry/Tigress/FrameConfiguration 0
+/Geometry/SeGA/Construct
 /Geometry/Update
 #
 /Source/Energy 1.0 MeV

@@ -129,8 +129,11 @@ void SeGA::PlaceDetector(G4LogicalVolume* expHall_log, G4int detNum, G4double Zo
       
       G4Tubs* seg_Tub = new G4Tubs("segTub",Inner+DLs,outerRadius-DLs,Length/zsegs - 0.5*DLs,
 				   360/phisegs*i*deg,360/phisegs*deg);
-      G4LogicalVolume* seg_log = new G4LogicalVolume(seg_Tub,HpGe,"GeLog");
 
+      G4int Copy = (detNum+1)*100 + seg;
+      G4String LVname = "GeLog" + std::to_string(Copy);
+      
+      G4LogicalVolume* seg_log = new G4LogicalVolume(seg_Tub,HpGe,LVname);
       if(j%2) {
 	if(i%2)
           seg_log->SetVisAttributes(Vis1);
@@ -142,9 +145,7 @@ void SeGA::PlaceDetector(G4LogicalVolume* expHall_log, G4int detNum, G4double Zo
           seg_log->SetVisAttributes(Vis2);
 	else
 	  seg_log->SetVisAttributes(Vis1);
-      }
-     
-      G4int Copy = (detNum+1)*100 + seg;	
+      }	
 
       G4double zshift = j*2*Length/zsegs - double(zsegs-1)/double(zsegs)*Length;
       G4ThreeVector vec(rd*cos(phid),rd*sin(phid),zd+zshift+Zoffset);

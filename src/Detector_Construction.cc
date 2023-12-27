@@ -61,8 +61,8 @@ G4VPhysicalVolume* Detector_Construction::Construct() {
   if(place_sega)
     PlaceSeGA();
 
-  //if(place_s3)
-  //PlaceS3();
+  if(place_s3)
+    PlaceS3();
   
   if(place_target)
     PlaceTarget();
@@ -72,7 +72,6 @@ G4VPhysicalVolume* Detector_Construction::Construct() {
 
 void Detector_Construction::ConstructSDandField() {
   
-  return;
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
   
   if(place_sega) {
@@ -86,7 +85,7 @@ void Detector_Construction::ConstructSDandField() {
 
     for(G4int det=0;det<16;det++)
       for(G4int seg=0;seg<32;seg++)
-	SetSensitiveDetector("GeLog" + std::to_string(100*(det + 1) + seg),gSD);
+	SetSensitiveDetector("GeLog" + std::to_string(100*(det + 1) + seg + 1),gSD);
 
   }
   
