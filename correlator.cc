@@ -31,7 +31,7 @@ double US_Offset = 3.4; // cm
 const double beam_X = 0.0; // cm 
 const double beam_Y = 0.0; // cm 
 
-double SeGA_Offset = 3.1; // cm
+double SeGA_Offset = 0.0; // cm
 /////////////////////////////////////////////////////////////////////////
 
 ////SeGA Resolution////
@@ -290,10 +290,10 @@ struct BuiltData {
   int nBa;
   int nSe;
   
-  BAM2 bam2[50];
+  BAM2 bam2[5];
   SEGA sega[16];
 
-  void MakeHit(const Bambino2Data ringHit, const Bambino2Data secHit) {
+  void MakeHit(const S3Data ringHit, const S3Data secHit) {
 
     bam2[nBa].det = ringHit.det; //either hit works
     bam2[nBa].ring = ringHit.ring;
@@ -318,10 +318,10 @@ struct BuiltData {
 /////////////////////////////////////////
 
 //Unpack raw data into correlated data
-BuiltData BuildData(const Header& head, const JANUSData& dat) {
+BuiltData BuildData(const Header& head, const RawData& dat) {
 
-  const int nBch = head.nBdata;
-  const int nSch = head.nSdata;
+  const int nBch = head.nSdata;
+  const int nSch = head.nGdata;
   const int nE = head.evtNum;
   
   BuiltData data;
@@ -330,22 +330,20 @@ BuiltData BuildData(const Header& head, const JANUSData& dat) {
   data.nSe = 0;
 
   //Correlate Bambino2 Data
-  std::vector<Bambino2Data> rings;
-  std::vector<Bambino2Data> sectors;
+  std::vector<S3Data> rings;
+  std::vector<S3Data> sectors;
   for(int i=0;i<nBch;i++) {
 
-    Bambino2Data bChan(dat.bData[i]);
+    S3Data bChan(dat.sData[i]);
     
-    if(bChan.IsRing()) {
+    if(bChan.IsRing())
       rings.push_back(bChan);
-    }
-    else {
+    else
       sectors.push_back(bChan);
-    }
   }
 
-  std::sort(rings.begin(),rings.end());
-  std::sort(sectors.begin(),sectors.end());
+  std::sort(rings.begin(),rings.end(),std::greater<S3Data>());
+  std::sort(sectors.begin(),sectors.end(),std::greater<S3Data>());
 
   std::vector<bool> used_rings;
   std::vector<bool> used_sectors;
@@ -357,25 +355,21 @@ BuiltData BuildData(const Header& head, const JANUSData& dat) {
   std::fill(used_sectors.begin(),used_sectors.end(),false);
 
   for(unsigned int i=0;i<sectors.size();i++) {
-    if(used_sectors.at(i)) {
+    if(used_sectors.at(i))
       continue;
-    }
     
     for(unsigned int j=0;j<rings.size();j++) {
-      if(used_rings.at(j)) {
+      if(used_rings.at(j))
         continue;
-      }
 
-         //Same detector
-      if((sectors.at(i).det == rings.at(j).det) &&
-
-	 //Same energy
-	 (TMath::Abs(sectors.at(i).en - rings.at(j).en) < 1.)) {
+      //Same detector and same energy
+      if((sectors.at(i).det == rings.at(j).det) && (TMath::Abs(sectors.at(i).en - rings.at(j).en) < 1.)) {
 
 	data.MakeHit(rings.at(j),sectors.at(i));
 
 	used_sectors.at(i) = true;
 	used_rings.at(j) = true;
+	
 	break;
 
       }
@@ -385,24 +379,19 @@ BuiltData BuildData(const Header& head, const JANUSData& dat) {
   bool broken = false;
   for(unsigned int i=0;i<sectors.size();i++) {
     broken=false;
-    if(used_sectors.at(i)) {
+    if(used_sectors.at(i))
       continue;
-    }
     
     for(unsigned int j=0;j<rings.size();j++) {
-      if(used_rings.at(j)) {
+      if(used_rings.at(j))
         continue;
-      }
 
       for(unsigned int k=0;k<sectors.size();k++) {
-	if(used_sectors.at(k)) {
+	if(used_sectors.at(k))
 	  continue;
-	}
 
-	  //Same detector
+	  //Same detector and sector energies add to ring energy
 	if((sectors.at(i).det == rings.at(j).det) && (sectors.at(k).det == rings.at(j).det) &&
-
-	   //Sector energies add to ring energy
 	   (TMath::Abs(sectors.at(i).en + sectors.at(k).en - rings.at(j).en) < 1.)) {
 
 	  data.MakeHit(rings.at(j),sectors.at(i));
@@ -412,13 +401,13 @@ BuiltData BuildData(const Header& head, const JANUSData& dat) {
 	  used_rings.at(j) = true;
 	  used_sectors.at(k) = true;
 	  broken = true;
+	  
 	  break;
 
 	}
       }
-      if(broken) {
+      if(broken)
 	break;
-      }
     }
   }
 
@@ -430,16 +419,16 @@ BuiltData BuildData(const Header& head, const JANUSData& dat) {
   int nS = 0;
   for(int i=0;i<nSch;i++) {
 
-    int detect = dat.sData[i].det;
-    int segment = dat.sData[i].seg;
+    int detect = dat.gData[i].det;
+    int segment = dat.gData[i].seg;
     
-    double energy = dat.sData[i].en;
-    double x = dat.sData[i].x;
-    double y = dat.sData[i].y;
-    double z = dat.sData[i].z;
+    double energy = dat.gData[i].en;
+    double x = dat.gData[i].x;
+    double y = dat.gData[i].y;
+    double z = dat.gData[i].z;
     
-    bool FEP = dat.sData[i].fep;
-    bool PFEP = dat.sData[i].pfep;
+    bool FEP = dat.gData[i].fep;
+    bool PFEP = dat.gData[i].pfep;
     
     if(!exists.at(detect-1)) {
       data.sega[nS].det = detect;
@@ -494,6 +483,7 @@ BuiltData BuildData(const Header& head, const JANUSData& dat) {
     }
     
   }
+  
   data.nSe = nS;
 
   return data;
@@ -702,17 +692,17 @@ int main(int argc, char** argv) {
   std::cout << "Correlating and histograming data..." << std::endl;
    
   Header header;
-  JANUSData jData;
+  RawData raw_data;
   while(fread(&header,header.bytes(),1,input_file)) {
 
-    const int nB = header.nBdata;
     const int nS = header.nSdata;
+    const int nG = header.nGdata;
     //const int nE = header.evtNum;
   
-    fread(&jData.bData,nB*sizeof(Bambino2Data),1,input_file);
-    fread(&jData.sData,nS*sizeof(SegaData),1,input_file);
+    fread(&raw_data.sData,sizeof(S3Data),nS,input_file);
+    fread(&raw_data.gData,sizeof(SeGAData),nG,input_file);
 
-    BuiltData data = BuildData(header,jData);
+    BuiltData data = BuildData(header,raw_data);
 
     //Bambino2 singles
     for(int i=0;i<data.nBa;i++) {

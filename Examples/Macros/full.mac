@@ -29,5 +29,5 @@
 /Output/WriteDiagnostics
 /Output/DiagnosticsFileName info.dat
 #
-/run/numberOfThreads 6
-/run/beamOn 10000000
+/run/numberOfThreads 12
+/run/beamOn 1000000
