@@ -1,0 +1,12 @@
+/Mode Source
+/Geometry/Tigress/Construct
+/Geometry/Tigress/Configuration 1
+/Geometry/Tigress/FrameConfiguration 0
+/Geometry/Update
+#
+/Source/Energy 1.0 MeV
+#
+/Output/FileName source.dat
+#
+/run/numberOfThreads 6
+/run/beamOn 1000000
