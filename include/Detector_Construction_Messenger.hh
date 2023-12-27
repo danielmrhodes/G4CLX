@@ -25,18 +25,14 @@ private:
 
   //Geometry directory and subdirectories
   G4UIdirectory* geometry_dir;
-  G4UIdirectory* tigress_dir;
+  G4UIdirectory* sega_dir;
   G4UIdirectory* s3_dir;
-  G4UIdirectory* spice_dir;
 
   //Check overlaps
   G4UIcmdWithoutParameter* check_cmd;
   
   //Tigress commands
-  G4UIcmdWithoutParameter* placeTig_cmd;
-  G4UIcmdWithAnInteger* removeTigDet_cmd;
-  G4UIcmdWithAnInteger* tigConfig_cmd;
-  G4UIcmdWithAnInteger* tigFrameConfig_cmd;
+  G4UIcmdWithoutParameter* placeSega_cmd;
   
   //S3 commands
   G4UIcmdWithoutParameter* placeSi_cmd;

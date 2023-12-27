@@ -17,12 +17,12 @@ public:
   
   G4VPhysicalVolume* Construct();
 
-  void PlaceTigress();
+  void PlaceSeGA();
   void PlaceS3();
   void PlaceTarget();
 
   void CheckOverlaps() {check = true;}
-  void SetPlaceTigress() {place_tigress = true;}
+  void SetPlaceSeGA() {place_sega = true;}
   void SetPlaceS3() {place_s3 = true;}
   void SetPlaceTarget() {place_target = true;} 
   
@@ -45,10 +45,6 @@ public:
 
   G4double GetUS_Offset() {return US_Offset;}
   G4double GetDS_Offset() {return DS_Offset;}
-
-  void SetTigressConfig(G4int config) {tigress_config = config;}
-  void SetTigressFrameConfig(G4int config);
-  void RemoveTigressPosition(G4int posNum);
   
 private:
 
@@ -61,17 +57,10 @@ private:
   G4LogicalVolume* logic_world;
   G4VPhysicalVolume* world;
 
-  //Suppressed parameters
-  G4double fTigressFwdBackPosition;
-  G4double fDetectorRadialDistance;
-
-  G4int tigress_config;
-  G4int frame_config;
-  G4int fHevimetSelector;
-  std::vector<G4int> tigressDets;
-  G4double fTigressDeadLayer[16][4];
+  //SeGA Z-offset
+  G4double SeGA_Offset;
   
-  //Bambino2 Z-offsest
+  //Bambino Z-offsest
   G4double US_Offset;
   G4double DS_Offset;
   
@@ -85,7 +74,7 @@ private:
   G4Material* target_mat;
   G4double target_step;
 
-  G4bool place_tigress;
+  G4bool place_sega;
   G4bool place_s3;
   G4bool place_target;
 

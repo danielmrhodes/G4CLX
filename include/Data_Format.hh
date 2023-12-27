@@ -17,7 +17,7 @@ struct INFO { //Diagnostic info
 
 struct Header {
   
-  int evtNum, nSdata, nTdata;
+  int evtNum, nSdata, nGdata;
 
   size_t bytes() {
     return 3*sizeof(int);
@@ -25,11 +25,11 @@ struct Header {
   
 }__attribute__((__packed__));
 
-struct TigressData {
+struct SeGAData {
 
   int det, seg;
   double en, x, y, z;
-  bool fep, pfep, sup;
+  bool fep, pfep;
   
 };
 
@@ -48,7 +48,7 @@ struct S3Data {
 struct RawData { //Simulated data
 
   S3Data sData[5];
-  TigressData tData[100];
+  SeGAData gData[100];
 
 }__attribute__((__packed__));
 

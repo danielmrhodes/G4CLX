@@ -59,11 +59,7 @@ void GammaSD::EndOfEvent(G4HCofThisEvent* HCE) {
     }
   }
   
-  G4double cores[64] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-			0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
-  
+  G4double cores[16] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0};
   for(unsigned int i=0;i<HC->entries();i++) {
     
     Gamma_Hit* hit = (Gamma_Hit*)HC->GetHit(i);	
@@ -76,14 +72,14 @@ void GammaSD::EndOfEvent(G4HCofThisEvent* HCE) {
   std::vector<G4int> projGams = trkAct->GetProjGammas();
   trkAct->Clear(); //reset for next event
   
-  for(int i=0;i<64;i++) {
+  for(int i=0;i<16;i++) {
     
     if(cores[i] < 0.01*keV)
       continue;
 
     Gamma_Hit* hit = new Gamma_Hit();
     hit->SetPos(G4ThreeVector());
-    hit->SetDetSeg(10*(i+1));
+    hit->SetDetSeg(100*(i+1));
     hit->SetEdep(cores[i]);
 
     G4bool bad = false;

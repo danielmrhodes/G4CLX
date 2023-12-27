@@ -12,28 +12,13 @@ Detector_Construction_Messenger::Detector_Construction_Messenger(Detector_Constr
 				G4ApplicationState::G4State_Idle);
   check_cmd->SetGuidance("Check for overlapping volumes");
 
-  //Tigress directory
-  tigress_dir = new G4UIdirectory("/Geometry/Tigress/");
+  //SeGA directory
+  sega_dir = new G4UIdirectory("/Geometry/SeGA/");
 
-  placeTig_cmd = new G4UIcmdWithoutParameter("/Geometry/Tigress/Construct",this);
-  placeTig_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,
-				   G4ApplicationState::G4State_Idle);
-  placeTig_cmd->SetGuidance("Place the Tigress array");
-
-  removeTigDet_cmd = new G4UIcmdWithAnInteger("/Geometry/Tigress/RemovePosition",this);
-  removeTigDet_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,
-				       G4ApplicationState::G4State_Idle);
-  removeTigDet_cmd->SetGuidance("Remove a tigress position (clover) from the simulation");
-
-  tigConfig_cmd = new G4UIcmdWithAnInteger("/Geometry/Tigress/Configuration",this);
-  tigConfig_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,
-				    G4ApplicationState::G4State_Idle);
-  tigConfig_cmd->SetGuidance("Set Tigress configuration. High-Eff (0) or High P/T (1).");
-
-  tigFrameConfig_cmd = new G4UIcmdWithAnInteger("/Geometry/Tigress/FrameConfiguration",this);
-  tigFrameConfig_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,
-					 G4ApplicationState::G4State_Idle);
-  tigFrameConfig_cmd->SetGuidance("Set Tigress frame configuration. Full structure (0), upstream lampshades (1), downstream lampshades (2),or corona only (3).");
+  placeSega_cmd = new G4UIcmdWithoutParameter("/Geometry/SeGA/Construct",this);
+  placeSega_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,
+  				   G4ApplicationState::G4State_Idle);
+  placeSega_cmd->SetGuidance("Place SeGA");
   
   //S3 directory
   s3_dir = new G4UIdirectory("/Geometry/S3/");
@@ -111,11 +96,8 @@ Detector_Construction_Messenger::~Detector_Construction_Messenger() {
   delete geometry_dir;
   delete check_cmd;
 
-  delete tigress_dir;
-  delete placeTig_cmd;
-  delete removeTigDet_cmd;
-  delete tigConfig_cmd;
-  delete tigFrameConfig_cmd;
+  delete sega_dir;
+  delete placeSega_cmd;
   
   delete s3_dir;
   delete placeSi_cmd;
@@ -142,22 +124,10 @@ void Detector_Construction_Messenger::SetNewValue(G4UIcommand* command, G4String
     G4cout << "Will check the geometry for overlapping physical volumes" << G4endl;
   }
   
-  /////TIGRESS commands/////
-  else if(command == placeTig_cmd) {
-    construction->SetPlaceTigress();
-    G4cout << "Simulation will include the Tigress array" << G4endl;
-  }
-  else if(command == removeTigDet_cmd) {
-    construction->RemoveTigressPosition(removeTigDet_cmd->GetNewIntValue(newValue));
-    G4cout << "Removing Tigress position " << newValue << " from the simulation"  << G4endl;
-  }
-  else if(command == tigConfig_cmd) {
-    construction->SetTigressConfig(tigConfig_cmd->GetNewIntValue(newValue));
-    G4cout << "Setting tigress configuration to " << newValue << G4endl;
-  }
-  else if(command == tigFrameConfig_cmd) {
-    construction->SetTigressFrameConfig(tigFrameConfig_cmd->GetNewIntValue(newValue));
-    G4cout << "Setting tigress frame configuration to " << newValue << G4endl;
+  /////SeGA commands/////
+  else if(command == placeSega_cmd) {
+    construction->SetPlaceSeGA();
+    G4cout << "Simulation will include the SeGA array" << G4endl;
   }
   //////////////////////////
   

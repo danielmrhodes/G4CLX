@@ -1,7 +1,6 @@
 #include "Run.hh"
 #include "Ion_Hit.hh"
 #include "Gamma_Hit.hh"
-#include "Suppressor_Hit.hh"
 #include "Data_Format.hh"
 #include "G4SystemOfUnits.hh"
 
@@ -22,18 +21,11 @@ void Run::RecordEvent(const G4Event* evt) {
 
   RawData data;
   G4int nS = 0;
-  G4int nT = 0;
+  G4int nG = 0;
 
   G4bool pFlagDS = false;
   G4bool pFlagUS = false;
   G4bool rFlag = false;
-
-  //Flags for suppressed gamma hits
-  G4bool sup[64] = {false,false,false,false,false,false,false,false,false,false,false,false,false,
-		    false,false,false,false,false,false,false,false,false,false,false,false,false,
-		    false,false,false,false,false,false,false,false,false,false,false,false,false,
-		    false,false,false,false,false,false,false,false,false,false,false,false,false,
-		    false,false,false,false,false,false,false,false,false,false,false,false};
   
   G4int gammaMult = 0;
   G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
@@ -76,7 +68,7 @@ void Run::RecordEvent(const G4Event* evt) {
       Gamma_Hit_Collection* gHC = (Gamma_Hit_Collection*)HCE->GetHC(i);
       for(unsigned int j=0;j<gHC->entries();j++) {
 
-	if(nT > 99) {
+	if(nG > 99) {
 	  std::cout << "Too many gamma hits!" << std::endl;
 	  break;
 	}
@@ -89,27 +81,12 @@ void Run::RecordEvent(const G4Event* evt) {
 	  
 	G4ThreeVector pos = hit->GetPos();
 	
-	data.tData[nT] = {hit->GetDetector(),seg,hit->GetEdep()/keV,pos.x()/cm,pos.y()/cm,pos.z()/cm,
-			  hit->IsFEP(),hit->IsProjFEP(),false};
-	nT++;
-      }
-    }
-    else if(name == "suppressorCollection") {
-
-      Suppressor_Hit_Collection* sHC = (Suppressor_Hit_Collection*)HCE->GetHC(i);
-      for(unsigned int j=0;j<sHC->entries();j++) {
-    
-        Suppressor_Hit* hit = (Suppressor_Hit*)sHC->GetHit(j);
-	G4int det = hit->GetDetector();
-
-	sup[det-1] = true;
-
+	data.gData[nG] = {hit->GetDetector(),seg,hit->GetEdep()/keV,pos.x()/cm,pos.y()/cm,pos.z()/cm,
+			  hit->IsFEP(),hit->IsProjFEP()};
+	nG++;
       }
     }
   }
- 
-  for(G4int i=0;i<nT;i++)
-    data.tData[i].sup = sup[data.tData[i].det-1];
   
   G4Run::RecordEvent(evt);
 
@@ -133,10 +110,10 @@ void Run::RecordEvent(const G4Event* evt) {
     
   }
   
-  if(nS == 0 && nT == 0)
+  if(nS == 0 && nG == 0)
     return;
 
-  if(owc && (nS == 0 || nT == 0))
+  if(owc && (nS == 0 || nG == 0))
     return;
 
   if(gammaMult < gammaTrigger)
@@ -145,11 +122,11 @@ void Run::RecordEvent(const G4Event* evt) {
   Header header;
   header.evtNum = num;
   header.nSdata = nS;
-  header.nTdata = nT;
+  header.nGdata = nG;
   
   fwrite(&header,header.bytes(),1,output);
   fwrite(&data.sData,sizeof(S3Data),nS,output);
-  fwrite(&data.tData,sizeof(TigressData),nT,output);
+  fwrite(&data.gData,sizeof(SeGAData),nG,output);
   
   return;
 }

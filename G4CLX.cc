@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
   G4UImanager* UI = G4UImanager::GetUIpointer();
   if(argc == 1) { //Interactive Mode
     
-    UI->ApplyCommand("/Geometry/Tigress/Construct");
+    UI->ApplyCommand("/Geometry/SeGA/Construct");
     UI->ApplyCommand("/Geometry/S3/Construct");
     UI->ApplyCommand("/Geometry/Target/Construct");
     UI->ApplyCommand("/Geometry/CheckOverlaps");

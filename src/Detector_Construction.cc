@@ -1,11 +1,9 @@
 #include "Detector_Construction.hh"
 
-#include "ApparatusTigressStructure.hh"
-#include "DetectionSystemTigress.hh"
+#include "SeGA.hh"
 #include "S3.hh"
 #include "Primary_Generator.hh"
 #include "GammaSD.hh"
-#include "SuppressorSD.hh"
 #include "IonSD.hh"
 
 #include "G4RunManager.hh"
@@ -22,6 +20,8 @@ Detector_Construction::Detector_Construction() {
 
   messenger = new Detector_Construction_Messenger(this);
 
+  SeGA_Offset = 0.0*mm;
+  
   US_Offset = 3.0*cm;
   DS_Offset = 3.0*cm;
   
@@ -34,24 +34,10 @@ Detector_Construction::Detector_Construction() {
   target_mat = NULL;
   target_step = 0.0*um;
 
-  place_tigress = false;
+  place_sega = false;
   place_s3 = false;
   place_target = false;
   check = false;
-
-  for(int i=0;i<16;i++)
-    tigressDets.push_back(i);
-
-  //0 for high eff, 1 for high P/T
-  tigress_config = 0;
-
-  // 0 for full structure, 1 for corona plus upstream lampshade, 2 corona plus downstream lampshade, 3 for corona only
-  frame_config = 0;
-  
-  fHevimetSelector = 1; // Chooses whether or not to include a hevimet
-  
-  DefineSuppressedParameters();
-  DefineMaterials();
   
 }
 
@@ -71,17 +57,12 @@ G4VPhysicalVolume* Detector_Construction::Construct() {
   G4Box* solid_world = new G4Box("World_Solid",2.0*m,2.0*m,2.0*m);
   logic_world = new G4LogicalVolume(solid_world,world_mat,"World_Logical");
   world = new G4PVPlacement(0,G4ThreeVector(),logic_world,"World",0,false,0,false);
-  
-  if(place_s3) { 
-    RemoveTigressPosition(6);
-    RemoveTigressPosition(10);
-  }
 
-  if(place_tigress)
-    PlaceTigress();
+  if(place_sega)
+    PlaceSeGA();
 
-  if(place_s3)
-    PlaceS3();
+  //if(place_s3)
+  //PlaceS3();
   
   if(place_target)
     PlaceTarget();
@@ -91,8 +72,10 @@ G4VPhysicalVolume* Detector_Construction::Construct() {
 
 void Detector_Construction::ConstructSDandField() {
   
+  return;
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
-  if(place_tigress) {
+  
+  if(place_sega) {
     
     G4String gSDname = "GammaTracker";
     GammaSD* gSD = (GammaSD*)SDman->FindSensitiveDetector(gSDname,false);
@@ -101,21 +84,9 @@ void Detector_Construction::ConstructSDandField() {
       SDman->AddNewDetector(gSD);
     }
 
-    G4String sSDname = "SuppressorTracker";
-    SuppressorSD* sSD = (SuppressorSD*)SDman->FindSensitiveDetector(sSDname,false);
-    if(!sSD) {
-      sSD = new SuppressorSD(sSDname);
-      SDman->AddNewDetector(sSD);
-    }
-
-    for(G4int det : tigressDets)
-      for(G4int i=0;i<4;i++)
-	for(G4int j=1;j<9;j++)
-	  SetSensitiveDetector("GeLog" + std::to_string(10*(det*4 + i + 1) + j),gSD);
-  
-    for(G4int det : tigressDets)
-      for(G4int i=1;i<6;i++)
-	SetSensitiveDetector("SupLog" + std::to_string(10*(det + 1) + i),sSD);
+    for(G4int det=0;det<16;det++)
+      for(G4int seg=0;seg<32;seg++)
+	SetSensitiveDetector("GeLog" + std::to_string(100*(det + 1) + seg),gSD);
 
   }
   
@@ -139,25 +110,11 @@ void Detector_Construction::ConstructSDandField() {
   
 }
 
-void Detector_Construction::PlaceTigress() {
+void Detector_Construction::PlaceSeGA() {
+
+  SeGA* sega = new SeGA();
+  sega->Placement(logic_world,SeGA_Offset,check);
   
-  ApparatusTigressStructure* structure = new ApparatusTigressStructure(check);
-  structure->Build();
-  structure->Place(logic_world,frame_config);
-
-  DetectionSystemTigress* tig = new DetectionSystemTigress(tigress_config,1,fTigressFwdBackPosition,
-							   fHevimetSelector,check);
-  for(G4int detNum : tigressDets) {
-
-    //These two functions no longer build the suppressor crystals
-    tig->BuildEverythingButCrystals(detNum);
-    tig->PlaceEverythingButCrystals(logic_world,detNum);
-    
-    tig->PlaceSegmentedCrystal(logic_world,detNum);
-    tig->PlaceSuppressors(logic_world,detNum);
-    
-  }
-
   return;
 }
 
@@ -228,56 +185,6 @@ void Detector_Construction::PlaceTarget() {
     
   }
   
-  return;
-}
-
-void Detector_Construction::SetTigressFrameConfig(int config) {
-
-  frame_config = config;
-  switch(frame_config) {
-
-  case 0:
-    break;
-
-  case 1:
-    for(G4int i=0;i<4;i++)
-      RemoveTigressPosition(i);
-    break;
-
-  case 2:
-    for(G4int i=12;i<16;i++)
-      RemoveTigressPosition(i);
-    break;
-
-  case 3:
-    for(G4int i=0;i<4;i++)
-      RemoveTigressPosition(i);
-    
-    for(G4int i=12;i<16;i++)
-      RemoveTigressPosition(i);
-
-    break;
-
-  default:
-    G4cout << "Config must be 0, 1, 2, or 3. Defaulting to 0" << G4endl;
-    frame_config = 0;
-    break;
-  }
-  
-  return;
-}
-
-void Detector_Construction::RemoveTigressPosition(G4int posNum) {
-
-  G4int detNum = posNum - 1;
-  for(unsigned int i=0;i<tigressDets.size();i++) {
-
-    if(tigressDets.at(i) == detNum) {
-      tigressDets.erase(tigressDets.begin() + i);
-      break;
-    }
-  }
-
   return;
 }
 
