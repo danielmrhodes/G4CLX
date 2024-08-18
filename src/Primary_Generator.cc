@@ -248,7 +248,7 @@ void Primary_Generator::GenerateFullPrimaries(G4Event* evt) {
   pI = exciteP->ChooseState(en,th);
   rI = exciteR->ChooseState(en,th);
 
-  //DelatE for inelastic scattering
+  //DeltaE for inelastic scattering
   G4double ex = 0.0*MeV;
   ex += exciteP->GetExcitation(pI);
   ex += exciteR->GetExcitation(rI);
@@ -292,7 +292,7 @@ void Primary_Generator::GenerateFullPrimaries(G4Event* evt) {
   Gamma_Decay::SetRecoilPolarization(exciteR->GetPolarization(rI,en,th,phiB));
   
   //Beam vertex
-  gun->SetParticleDefinition(exciteP->GetDefinition(pI));
+  gun->SetParticleDefinition(exciteP->GetDefinition(pI)); 
   gun->SetParticleEnergy(reac->KE_LAB(th,en,ex));
   gun->SetParticlePosition(pos);
   gun->SetParticleMomentumDirection(bdir);
@@ -398,6 +398,8 @@ void Primary_Generator::UpdateReaction() {
     G4EmCalculator calc;
     dedx = calc.ComputeTotalDEDX(beam_En,projGS,mat);
     width = con->GetTargetThickness();
+
+    //std::cout << dedx/(MeV/mm) << std::endl;
 
     /*
     const int num = 101;

@@ -160,7 +160,7 @@ void tensor_reader(int index = 1, int k=0, int kappa=0, bool norm=false) {
   double tlow = thetas.front() - spT/2.0;
   double tmax = thetas.back() + spT/2.0;
   
-  GH2D* h = new GH2D(Form("hT%02d",index),"tmp",numE,elow,emax,numT,tlow,tmax);
+  TH2D* h = new TH2D(Form("hT%02d",index),"tmp",numE,elow,emax,numT,tlow,tmax);
 
   if(norm)
     h->SetTitle(Form("State %d Polarization Tensor Component %d %d; Energy (MeV); ThetaCM (rad); Value",index,k,kappa));
@@ -186,10 +186,10 @@ void tensor_reader(int index = 1, int k=0, int kappa=0, bool norm=false) {
     }
   }
 
-  new GCanvas();
+  new TCanvas();
   g->Draw("pcol");
 
-  new GCanvas();
+  new TCanvas();
   h->Draw("colz");
   
   return;

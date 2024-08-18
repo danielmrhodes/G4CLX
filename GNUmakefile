@@ -7,7 +7,7 @@ name := G4CLX
 G4TARGET := $(name)
 G4EXLIB := true
 
-CPPFLAGS += -std=c++11 -g
+CPPFLAGS += -std=c++11 -g -I/home/rhodes25/programs/gsl/include -L/home/rhodes25/programs/gsl/lib
 EXTRALIBS += -lgsl -lgslcblas
 
 .PHONY: all

@@ -81,7 +81,7 @@ void prob_reader(int index = 0) {
   TGraph2D* g = new TGraph2D(numT*numE);
   g->SetName(Form("gP%02d",index));
   
-  g->SetTitle(Form("State %d Excitation Probabilities; Energy (MeV); ThetaCM (deg); Probability",index));
+  g->SetTitle(Form("State %d Excitation Probabilities; Energy (MeV); ThetaCM (rad); Probability",index));
   g->SetMarkerStyle(20);
   g->SetMarkerSize(1.5);
   g->GetXaxis()->SetTitleOffset(2.2);
@@ -96,8 +96,8 @@ void prob_reader(int index = 0) {
   double tlow = thetas.front() - spT/2.0;
   double tmax = thetas.back() + spT/2.0;
   
-  GH2D* h = new GH2D(Form("hP%02d",index),
-		     Form("State %d Excitation Probabilities; Energy (MeV); ThetaCM (deg); Probability",index),
+  TH2D* h = new TH2D(Form("hP%02d",index),
+		     Form("State %d Excitation Probabilities; Energy (MeV); ThetaCM (rad); Probability",index),
 		     numE,elow,emax,numT,tlow,tmax);
   
   for(int i=0;i<numE;i++) {
@@ -113,10 +113,10 @@ void prob_reader(int index = 0) {
     }
   }
 
-  new GCanvas();
+  new TCanvas();
   g->Draw("pcol");
 
-  new GCanvas();
+  new TCanvas();
   h->Draw("colz");
   
   return;
