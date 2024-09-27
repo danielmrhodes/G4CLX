@@ -1,3 +1,4 @@
+/*
 #include "Physics_List.hh"
 
 #include "G4SystemOfUnits.hh"
@@ -105,3 +106,29 @@ void Physics_List::ConstructParticle() {
   
 }
 
+*/
+
+#include "Physics_List.hh"
+#include "G4EmStandardPhysics_option4.hh"
+
+Physics_List::Physics_List() : G4VModularPhysicsList() {;}
+Physics_List::~Physics_List() {;}
+
+void Physics_List::ConstructProcess() {
+  
+  AddTransportation();
+
+  G4EmStandardPhysics_option4 emPhysicsList;
+  emPhysicsList.ConstructProcess();
+  
+  return;
+}
+
+void Physics_List::ConstructParticle() {
+  
+  G4EmStandardPhysics_option4 emPhysicsList;
+  emPhysicsList.ConstructParticle();
+  
+  return;
+  
+}
