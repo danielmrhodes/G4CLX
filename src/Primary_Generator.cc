@@ -394,13 +394,12 @@ void Primary_Generator::UpdateReaction() {
 
   G4Material* mat = con->GetTargetMaterial();
   if(mat) {
+
+    width = con->GetTargetThickness();
     
     G4EmCalculator calc;
     dedx = calc.ComputeTotalDEDX(beam_En,projGS,mat);
-    width = con->GetTargetThickness();
-
-    //std::cout << dedx/(MeV/mm) << std::endl;
-
+    
     /*
     const int num = 101;
     G4double eMin = 0.1*beam_En;
