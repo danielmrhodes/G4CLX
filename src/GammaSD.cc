@@ -49,6 +49,9 @@ void GammaSD::EndOfEvent(G4HCofThisEvent* HCE) {
       if(hit1->GetSegment() == hit2->GetSegment() && hit1->GetDetector() == hit2->GetDetector()) {
 	
 	hit1->SetEdep(hit1->GetEdep()+hit2->GetEdep());
+
+	delete hit2;
+	hit2=NULL;
 	
 	std::vector<Gamma_Hit*>* vec = HC->GetVector();
 	vec->erase(vec->begin()+j);

@@ -60,7 +60,7 @@ void Run::RecordEvent(const G4Event* evt) {
 	                 hit->IsProjectile(),hit->IsRecoil()};
 	 
 	nS++;
-
+	
       }
     }
     else if(name == "gammaCollection") {
@@ -89,7 +89,7 @@ void Run::RecordEvent(const G4Event* evt) {
   }
   
   G4Run::RecordEvent(evt);
-
+  
   G4int num = evt->GetEventID();
   if(write_diag) {
   

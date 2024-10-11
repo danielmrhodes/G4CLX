@@ -48,6 +48,7 @@ G4bool IonSD::ProcessHits(G4Step* step, G4TouchableHistory*) {
 
 void IonSD::EndOfEvent(G4HCofThisEvent* HCE) {
   
+  
   if(HC->entries() > 2) {
     ConsolidateHits();
   }
@@ -81,7 +82,10 @@ void IonSD::ConsolidateHits() {
 	 ) {
 
 	hit1->SetEdep(hit1->GetEdep()+hit2->GetEdep());
-	
+
+	delete hit2;
+	hit2=NULL;
+
 	std::vector<Ion_Hit*>* vec = HC->GetVector();
 	vec->erase(vec->begin()+j);
 
@@ -111,6 +115,9 @@ void IonSD::CombineRings() {
 	
 	hit1->SetIsProjectile();
 	hit1->SetIsRecoil();
+
+	delete hit2;
+	hit2=NULL;
 	
 	std::vector<Ion_Hit*>* vec = HC->GetVector();
 	vec->erase(vec->begin()+j);
