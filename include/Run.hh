@@ -12,7 +12,7 @@ class Run : public G4Run {
 public:
 
   Run();
-  virtual ~Run() {;}
+  virtual ~Run();
 
   virtual void RecordEvent(const G4Event* evt);
   virtual void Merge(const G4Run* run);

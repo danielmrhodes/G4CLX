@@ -17,6 +17,8 @@ Run::Run() {
   
 }
 
+Run::~Run() {;}
+
 void Run::RecordEvent(const G4Event* evt) {
 
   RawData data;
