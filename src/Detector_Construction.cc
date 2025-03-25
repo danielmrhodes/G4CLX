@@ -131,7 +131,7 @@ void Detector_Construction::PlaceTarget() {
   //Target material (isotopically pure)
   target_mat = new G4Material("target_mat",target_density,1); //Bulk material
   G4Element* target_ele = new G4Element("target_ele","target_symbol",1); //Element
-  G4Isotope* target_iso = new G4Isotope("target_iso",target_Z,target_N,target_mass); //Isotope
+  G4Isotope* target_iso = new G4Isotope("target_iso",target_Z,target_Z+target_N,target_mass); //Isotope
   target_ele->AddIsotope(target_iso,1.0);
   target_mat->AddElement(target_ele,1.0);
   */
