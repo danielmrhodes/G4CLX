@@ -9,6 +9,7 @@
 #include "G4UItcsh.hh"
 #include "G4VisManager.hh"
 #include "G4VisExecutive.hh"
+//#include "G4OpenGLStoredX.hh"
 
 int main(int argc, char** argv) {
   
@@ -34,6 +35,8 @@ int main(int argc, char** argv) {
     
     G4VisManager* visManager = new G4VisExecutive();
     visManager->Initialize();
+    
+    //visManager->RegisterGraphicsSystem(new G4OpenGLStoredX());
     
     UI->ApplyCommand("/vis/open OGLSX");
     UI->ApplyCommand("/vis/drawVolume");
