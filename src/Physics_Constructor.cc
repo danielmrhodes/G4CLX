@@ -46,11 +46,7 @@
 #include "G4LindhardSorensenIonModel.hh"
 #include "G4NuclearStopping.hh"
 #include "G4eplusTo2or3GammaModel.hh"
-
 #include "G4StepLimiter.hh"
-//#include "G4AtimaEnergyLossModel.hh"
-//#include "G4AtimaFluctuations.hh"
-//#include "G4BraggIonModel.hh"
 
 #include "G4Gamma.hh"
 #include "G4Electron.hh"
@@ -269,9 +265,6 @@ void Physics_Constructor::ConstructProcess() {
   particle = G4GenericIon::GenericIon();
   G4ionIonisation* ionIoni = new G4ionIonisation();
   ionIoni->SetEmModel(new G4LindhardSorensenIonModel());
-  //ionIoni->SetEmModel(new G4BraggIonModel(),0);
-  //ionIoni->SetEmModel(new G4AtimaEnergyLossModel(),1);
-  //ionIoni->SetFluctModel(new G4AtimaFluctuations());
   
   //ph->RegisterProcess(hmsc, particle);
   ph->RegisterProcess(ionIoni, particle);
