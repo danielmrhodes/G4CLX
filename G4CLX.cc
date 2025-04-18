@@ -9,7 +9,6 @@
 #include "G4UItcsh.hh"
 #include "G4VisManager.hh"
 #include "G4VisExecutive.hh"
-//#include "G4OpenGLStoredX.hh"
 
 int main(int argc, char** argv) {
   
