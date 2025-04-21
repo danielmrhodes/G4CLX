@@ -6,11 +6,11 @@
 struct INFO { //Diagnostic info
   
   int evtNum, indexP, indexR;
-  double beamEn, thetaCM;
+  float beamEn, thetaCM;
   bool projDS, projUS, rec;
 
   size_t bytes() {
-    return 3*sizeof(int) + 2*sizeof(double) + 3*sizeof(bool);
+    return 3*sizeof(int) + 2*sizeof(float) + 3*sizeof(bool);
   }
   
 }__attribute__((__packed__));
@@ -28,7 +28,7 @@ struct Header {
 struct TigressData {
 
   int det, seg;
-  double en, x, y, z;
+  float en, x, y, z;
   bool fep, pfep, sup;
   
 };
@@ -36,7 +36,7 @@ struct TigressData {
 struct S3Data {
 
   int det, ring, sector;
-  double en, x, y, z;
+  float en, x, y, z;
   bool proj, rec;
 
   bool IsRing() const {return (bool)ring;}

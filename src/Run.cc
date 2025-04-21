@@ -51,22 +51,30 @@ void Run::RecordEvent(const G4Event* evt) {
 	}
     
         Ion_Hit* hit = (Ion_Hit*)iHC->GetHit(j);
-	G4int det = hit->GetDetector();
+	int det = hit->GetDetector();
+	int ring = hit->GetRing();
+	int sect = hit->GetSector();
 	
-	if(hit->IsProjectile()) {
+	float en = float(hit->GetEdep()/MeV);
+
+	G4ThreeVector pos = hit->GetPos();
+	float x = float(pos.x()/cm);
+	float y = float(pos.y()/cm);
+	float z = float(pos.z()/cm);
+	
+	bool proj = hit->IsProjectile();
+	bool rec = hit->IsRecoil();
+
+	if(proj) {
 	  if(det)
 	    pFlagDS = true;
 	  else
 	    pFlagUS = true;
 	}
-	if(hit->IsRecoil())
-	  rFlag = true;
-	
-        G4ThreeVector pos = hit->GetPos();
-	data.sData[nS]= {det,hit->GetRing(),hit->GetSector(), hit->GetEdep()/MeV,
-			 pos.x()/cm,pos.y()/cm,pos.z()/cm,
-	                 hit->IsProjectile(),hit->IsRecoil()};
-	 
+	if(rec)
+	  rFlag = true;	
+        
+	data.sData[nS]= {det,ring,sect,en,x,y,z,proj,rec};
 	nS++;
 
       }
@@ -83,15 +91,25 @@ void Run::RecordEvent(const G4Event* evt) {
     
         Gamma_Hit* hit = (Gamma_Hit*)gHC->GetHit(j);
 	
-	G4int seg = hit->GetSegment();
+	int det = hit->GetDetector();
+	int seg = hit->GetSegment();
+
+	float en = float(hit->GetEdep()/keV);
+
+	G4ThreeVector pos = hit->GetPos();
+	float x = float(pos.x()/cm);
+	float y = float(pos.y()/cm);
+	float z = float(pos.z()/cm);
+	
+	bool fep = hit->IsFEP();
+	bool pfep = hit->IsProjFEP();
+	
 	if(!seg)
 	  gammaMult++;
-	  
-	G4ThreeVector pos = hit->GetPos();
 	
-	data.tData[nT] = {hit->GetDetector(),seg,hit->GetEdep()/keV,pos.x()/cm,pos.y()/cm,pos.z()/cm,
-			  hit->IsFEP(),hit->IsProjFEP(),false};
+	data.tData[nT] = {det,seg,en,x,y,z,fep,pfep,false};
 	nT++;
+      
       }
     }
     else if(name == "suppressorCollection") {
@@ -122,8 +140,8 @@ void Run::RecordEvent(const G4Event* evt) {
     info.indexP = gen->GetProjectileIndex();
     info.indexR = gen->GetRecoilIndex();
 
-    info.beamEn = gen->GetBeamEnergy();
-    info.thetaCM = gen->GetThetaCM();
+    info.beamEn = float(gen->GetBeamEnergy());
+    info.thetaCM = float(gen->GetThetaCM());
   
     info.projDS = pFlagDS;
     info.projUS = pFlagUS;
