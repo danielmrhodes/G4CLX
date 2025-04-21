@@ -2,6 +2,7 @@
 
 #include "G4SystemOfUnits.hh"
 #include "G4ParticleDefinition.hh"
+#include "G4IonTable.hh"
 #include "G4LossTableManager.hh"
 #include "G4EmParameters.hh"
 #include "G4EmBuilder.hh"
@@ -276,6 +277,17 @@ void Physics_Constructor::ConstructProcess() {
 
   // extra configuration
   G4EmModelActivator mact(GetPhysicsName());
+
+  //G4ParticleTable* table = G4ParticleTable::GetParticleTable();
+  G4IonTable* table = (G4IonTable*)(G4ParticleTable::GetParticleTable()->GetIonTable());
+  
+  G4ParticleDefinition* bi209 = table->GetIon(83,209,0.0);
+  bi209->SetPDGLifeTime(-1.0*ps);
+  
+  G4ParticleDefinition* ge76 = table->GetIon(32,76,0.0);
+  ge76->SetPDGLifeTime(-1.0*ps);
+
+  return;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

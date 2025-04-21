@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
 	UI->ApplyCommand(line);
       
     }
-
+    
     runManager->Initialize();
     UI->ApplyCommand(line); //beamOn command
     
