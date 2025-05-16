@@ -1,5 +1,6 @@
 //#include "/path/to/G4TCX/include/Data_Format.hh"
-#include "/opt/G4TCX/include/Data_Format.hh"
+//#include "/opt/G4TCX/include/Data_Format.hh"
+#include "/home/rhodes25/programs/G4CLX/include/Data_Format.hh"
 void diagnostics(std::string input_filename = "output-info.dat",
 		 std::string output_filename = "output-info.root") {
 
