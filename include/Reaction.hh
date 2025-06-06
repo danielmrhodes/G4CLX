@@ -28,6 +28,7 @@ public:
 
   //This defines the desired scattering angles//
   void AddThetaLAB(G4double T) {good_LAB_thetas.push_back(T);}
+  void AddThetaCM(G4double T) {good_CM_thetas.push_back(T);}
   
   ///This builds the desired scattering angle distribution///
   void ConstructRutherfordCM(G4double Ep, G4double Ex=0.0*MeV);
@@ -87,6 +88,7 @@ private:
 
   //desired scattering angles
   std::vector<G4double> good_LAB_thetas;
+  std::vector<G4double> good_CM_thetas;
   
   //Random generator for CM scattering angle
   CLHEP::RandGeneral* AngleGenerator;

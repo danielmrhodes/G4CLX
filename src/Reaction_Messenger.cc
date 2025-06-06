@@ -17,25 +17,25 @@ Reaction_Messenger::Reaction_Messenger(Reaction* reac) : reaction(reac) {
 
   //Recoil
   recoilZ_cmd = new G4UIcmdWithAnInteger("/Reaction/RecoilZ",this);
-  recoilZ_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,
-				  G4ApplicationState::G4State_Idle);
+  recoilZ_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,G4ApplicationState::G4State_Idle);
   recoilZ_cmd->SetGuidance("Set Z of recoil nucleus");
 
   recoilA_cmd = new G4UIcmdWithAnInteger("/Reaction/RecoilA",this);
-  recoilA_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,
-				  G4ApplicationState::G4State_Idle);
+  recoilA_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,G4ApplicationState::G4State_Idle);
   recoilA_cmd->SetGuidance("Set A of recoil nucleus");
 
   recoilThresh_cmd = new G4UIcmdWithADoubleAndUnit("/Reaction/RecoilThreshold",this);
-  recoilThresh_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,
-				       G4ApplicationState::G4State_Idle);
+  recoilThresh_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,G4ApplicationState::G4State_Idle);
   recoilThresh_cmd->SetGuidance("Set energy threshold for recoil detection.");
 
   //Scattering angle commands
   addTheta_cmd = new G4UIcmdWithADoubleAndUnit("/Reaction/AddThetaLAB",this);
-  addTheta_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,
-				   G4ApplicationState::G4State_Idle);
+  addTheta_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,G4ApplicationState::G4State_Idle);
   addTheta_cmd->SetGuidance("Add an angle to define desired LAB scattering angle range. This command must always be used two at a time, with the smaller angle coming first. Otherwise it doesn't work.");
+
+  addThetaCM_cmd = new G4UIcmdWithADoubleAndUnit("/Reaction/AddThetaCM",this);
+  addThetaCM_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,G4ApplicationState::G4State_Idle);
+  addThetaCM_cmd->SetGuidance("Add an angle to define desired CM scattering angle range. This command must always be used two at a time, with the smaller angle coming first. Otherwise it doesn't work.");
   
 }
 Reaction_Messenger::~Reaction_Messenger() {
@@ -50,6 +50,7 @@ Reaction_Messenger::~Reaction_Messenger() {
   delete recoilThresh_cmd;
   
   delete addTheta_cmd;
+  delete addThetaCM_cmd;
   
 }
 
@@ -84,7 +85,12 @@ void Reaction_Messenger::SetNewValue(G4UIcommand* command, G4String newValue) {
 
   else if(command == addTheta_cmd) {
     reaction->AddThetaLAB(addTheta_cmd->GetNewDoubleValue(newValue));
-    message = "Adding theta = " + newValue + " to list of desired thetas!";
+    message = "Adding theta = " + newValue + " to list of desired LAB thetas!";
+  }
+
+  else if(command == addThetaCM_cmd) {
+    reaction->AddThetaCM(addThetaCM_cmd->GetNewDoubleValue(newValue));
+    message = "Adding theta = " + newValue + " to list of desired CM thetas!";
   }
 
   G4int threadID = G4Threading::G4GetThreadId();
