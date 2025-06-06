@@ -34,8 +34,7 @@ Primary_Generator::Primary_Generator() {
   source_energy = -1.0*MeV;
   source_pos = G4ThreeVector();
   
-  dedx = 0.0*(MeV/mm);
-  //dedx1 = NULL;
+  dedx = -1.0*(MeV/mm);
   width = 0.0*mm;
 
   beam_X = 0.0*mm;
@@ -143,18 +142,6 @@ void Primary_Generator::GenerateScatteringPrimaries(G4Event* evt) {
 
   //Energy loss
   en -= dedx*depth;
-
-  /*
-  G4double dist = 0.0*mm;
-  G4double step = 0.01*width;
-  
-  en -= std::fmod(depth,step)*dedx1->CubicSplineInterpolation(en);
-  dist += std::fmod(depth,step);
-  while(dist < depth) {
-    en -= step*dedx1->CubicSplineInterpolation(en);
-    dist += step;
-  }
-  */
   
   //Reaction position
   //Randomize X and Y based on beam spot
@@ -395,28 +382,19 @@ void Primary_Generator::UpdateReaction() {
   G4Material* mat = con->GetTargetMaterial();
   if(mat) {
 
-    width = con->GetTargetThickness();
-    
-    G4EmCalculator calc;
-    dedx = calc.ComputeTotalDEDX(beam_En,projGS,mat);
-    
-    /*
-    const int num = 101;
-    G4double eMin = 0.1*beam_En;
-    G4double eMax = 1.1*beam_En;
-    G4double step = (eMax - eMin)/G4double(num-1);
-    
-    G4double px[num];
-    G4double py[num];
-    for(G4int i=0;i<num;i++) {
-      G4double Ep = eMin + i*step;
-      px[i] = Ep;
-      py[i] = calc.ComputeTotalDEDX(Ep,projGS,mat);
+    if(dedx < 0.0) {
+      G4EmCalculator calc;
+      dedx = calc.ComputeTotalDEDX(beam_En,projGS,mat);
     }
-    
-    dedx1 = new G4DataInterpolation(px,py,num,0.0,0.0);
-    */
+    width = con->GetTargetThickness();
   }
+
+  if(dedx < 0.0)
+    dedx = 0.0;
+
+  G4int threadID = G4Threading::G4GetThreadId();
+  if(!threadID)
+    std::cout << "Incident stopping power: " << dedx/(MeV/um) << " MeV/um" << std::endl;
   
   return;
 }
@@ -424,7 +402,7 @@ void Primary_Generator::UpdateReaction() {
 
 G4bool Primary_Generator::CheckIntersections(const G4ThreeVector& bdir, const G4ThreeVector& rdir,
 					     const G4ThreeVector& pos) {
-  
+  /*
   //No detector restrictions
   if(onlyP)  //Only projectiles
     return (Intersects(bdir,s3_1-pos) && bdir.getZ() > 0.0) ||
@@ -432,7 +410,7 @@ G4bool Primary_Generator::CheckIntersections(const G4ThreeVector& bdir, const G4
   
   if(onlyR) //Only Recoils, can only be downstream S3
     return Intersects(rdir,s3_1-pos);
-
+  */
   //No restrictions
   return (Intersects(bdir,s3_1-pos) && bdir.getZ() > 0.0) || Intersects(rdir,s3_1-pos) ||
     (Intersects(bdir,s3_0-pos) && bdir.getZ() < 0.0);

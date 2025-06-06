@@ -44,6 +44,10 @@ Primary_Generator_Messenger::Primary_Generator_Messenger(Primary_Generator* gen)
   beamEn_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,G4ApplicationState::G4State_Idle);
   beamEn_cmd->SetGuidance("Set kinetic energy of incoming beam");
 
+  dedx_cmd = new G4UIcmdWithADouble("/Beam/DEDX",this);
+  dedx_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,G4ApplicationState::G4State_Idle);
+  dedx_cmd->SetGuidance("Setstopping power the incoming beam in the target");
+
   sigX_cmd = new G4UIcmdWithADoubleAndUnit("/Beam/SigmaX",this);
   sigX_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,G4ApplicationState::G4State_Idle);
   sigX_cmd->SetGuidance("Set Gaussian sigma of X position distribution");
@@ -93,6 +97,7 @@ Primary_Generator_Messenger::~Primary_Generator_Messenger() {
   delete beamAX_cmd;
   delete beamAY_cmd;
   delete beamEn_cmd;
+  delete dedx_cmd;
   
   delete sigX_cmd;
   delete sigY_cmd;
@@ -142,6 +147,11 @@ void Primary_Generator_Messenger::SetNewValue(G4UIcommand* command, G4String new
   else if(command == beamEn_cmd) {
     generator->SetBeamEn(beamEn_cmd->GetNewDoubleValue(newValue));
     message =  "Setting kinetic energy of incoming beam to " + newValue;
+  }
+
+  else if(command == dedx_cmd) {
+    generator->SetDEDX(dedx_cmd->GetNewDoubleValue(newValue));
+    message =  "Setting stopping power of incoming beam to " + newValue + " MeV/mm";
   }
  
   else if(command == sigX_cmd) {
