@@ -3,6 +3,8 @@ G4CLX
 A GEANT4 simulation of multi-step Coulomb excitation experiments.
 =================================================================
 
+Everything related to the GRETINA/GRETA array was taken from the UCGretina simulation package [4]. Refer to Ref. [4] for more information (inclding GRETINA related UI commands).
+
 Requirements
 ------------------
 - G4CLX has only been tested on GEANT4 v11.3.2
@@ -251,3 +253,5 @@ References
 [2] T. Czosnyka, D. Cline, and C.Y. Wu, *GOSIA User's Manual*, Bull. Am. Phys. Soc. **28**, 745 (1983). [http://www.pas.rochester.edu/~cline/Gosia/Gosia_Manual_20120510.pdf](http://www.pas.rochester.edu/~cline/Gosia/Gosia_Manual_20120510.pdf)
 
 [3] J. Henderson, *Cygnus*, [https://github.com/jhenderson88/Cygnus](https://github.com/jhenderson88/Cygnus)
+
+[4] L. Riley *et. al.*, *UCGretina*, [https://github.com/rileyle/UCGretina](https://github.com/rileyle/UCGretina)
