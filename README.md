@@ -16,15 +16,15 @@ Running G4CLX
 G4CLX takes an input macro file and writes the output to a data file. To run the simulation and subsequently histogram the simulation output, do
 
 - G4CLX input.mac
-- ./correlator output.dat hist_file.root
+- ./correlator(X) output.dat hist_file.root
 
 The ROOT file hist_file.root now contains many histograms and can be opened with any standard ROOT installation.
 
-The correlator is a small program compiled with ROOT libraries. To compile the correlator, simply
+The correlators are small programs compiled with ROOT libraries. The correlator.cc programs is used for simulations with the S3 detectors; correlatorX.cc is used for CHICOX simulations. To compile the correlators, simply
 
-- ./make_correlator.sh
+- ./make_correlator(X).sh
 
-If you want the Doppler correction to work, the correlator.cc file needs to be edited and recompiled. Immediately after the inlcude statements there are several variables which need to be changed to match the simulation input.
+If you want the Doppler correction to work, the correlator(X).cc file needs to be edited and recompiled. Immediately after the inlcude statements there are several variables which need to be changed to match the simulation input.
 
 Additionally, the simulation will output a file, output-info.dat, along with the simulated data file. This file contains information on the CM scatttering angles and exicted state population distributions. This file can be unpacked using the diagnostics.C ROOT script, found in the Helpers folder.
 
@@ -87,7 +87,7 @@ The /Geometry commands are common across all modes.
 | /Geometry/Target/Radius *double unit* | Set radius of target. (Default: 0.5 cm) |
 | /Geometry/CheckOverlaps | Check for overlapping physical volumes. |
 
-The various /Construct commands are mandatory if you want to include that particular piece of the setup in the simulation. You should only construct one paticle detection arry (CHICOX or the S3 detectors).
+The various /Construct commands are mandatory if you want to include that particular piece of the setup in the simulation. You should only construct one paticle detection array (CHICOX or the S3 detectors).
 
 Note that the /Geometry/Target/ commands do **NOT** define the recoiling nucleus for the kinematics or excitation, it only defines "bulk" material properties of the target.
 
