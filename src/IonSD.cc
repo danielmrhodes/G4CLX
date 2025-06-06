@@ -48,13 +48,9 @@ G4bool IonSD::ProcessHits(G4Step* step, G4TouchableHistory*) {
 
 void IonSD::EndOfEvent(G4HCofThisEvent* HCE) {
   
-  if(HC->entries() > 2) {
-    ConsolidateHits();
-  }
   
-  if(HC->entries() > 3) {
-    CombineRings();
-  }
+  ConsolidateHits();
+  CombineRings();
   
   HCE->AddHitsCollection(HCE->GetNumberOfCollections(),HC);
   
@@ -78,7 +74,12 @@ void IonSD::ConsolidateHits() {
 	 &&
 	 
 	 ((hit1->IsRing() && hit2->IsRing()) || (hit1->IsSector() && hit2->IsSector()))
-	 ) {
+	
+	 &&
+
+	 (hit1->GetDetector() == hit2->GetDetector()) 
+
+	) {
 
 	hit1->SetEdep(hit1->GetEdep()+hit2->GetEdep());
 	
@@ -101,6 +102,8 @@ void IonSD::ConsolidateHits() {
 
 void IonSD::CombineRings() {
 
+ label:
+
   for(unsigned int i=0;i<HC->entries();i++) {
     for(unsigned int j=i+1;j<HC->entries();j++) {
 
@@ -121,6 +124,7 @@ void IonSD::CombineRings() {
 	std::vector<Ion_Hit*>* vec = HC->GetVector();
 	vec->erase(vec->begin()+j);
 	
+	goto label;	
       }
 
     }
