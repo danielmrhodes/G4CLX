@@ -8,6 +8,7 @@
 #include "Excitation.hh"
 #include "Data_Format.hh"
 
+#include "G4SystemOfUnits.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleDefinition.hh"
@@ -31,6 +32,7 @@ public:
   void SetBeamAX(G4double AX) {beam_AX = AX;}
   void SetBeamAY(G4double AY) {beam_AY = AY;}
   void SetBeamEn(G4double En) {beam_En = En;}
+  void SetDEDX(G4double val) {dedx = val;}
   
   void SetSigmaX(G4double sigX) {sigma_X = sigX;}
   void SetSigmaY(G4double sigY) {sigma_Y = sigY;}
@@ -104,7 +106,6 @@ private:
   
   //used for incoming energy loss in target
   G4double dedx;
-  //G4DataInterpolation* dedx1;
   G4double width;
   
   G4double beam_X; //X position of beam

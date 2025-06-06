@@ -5,6 +5,7 @@
 
 #include "G4UImessenger.hh"
 #include "G4UIcmdWithoutParameter.hh"
+#include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
 #include "G4UIcmdWithAString.hh"
@@ -32,6 +33,7 @@ private:
   G4UIcmdWithADoubleAndUnit* beamAX_cmd;
   G4UIcmdWithADoubleAndUnit* beamAY_cmd;
   G4UIcmdWithADoubleAndUnit* beamEn_cmd;
+  G4UIcmdWithADouble* dedx_cmd;
   
   G4UIcmdWithADoubleAndUnit* sigX_cmd;
   G4UIcmdWithADoubleAndUnit* sigY_cmd;
