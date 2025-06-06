@@ -34,6 +34,7 @@ private:
   
   G4UIcmdWithADoubleAndUnit* recoilThresh_cmd;
   G4UIcmdWithADoubleAndUnit* addTheta_cmd;
+  G4UIcmdWithADoubleAndUnit* addThetaCM_cmd;
   
 };
 

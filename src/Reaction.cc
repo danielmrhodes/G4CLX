@@ -30,41 +30,40 @@ void Reaction::ConstructRutherfordCM(G4double Ep, G4double Ex) {
 
   G4int threadID = G4Threading::G4GetThreadId();
   
-  if(!good_LAB_thetas.size()) {
+  if(!good_LAB_thetas.size() && !good_CM_thetas.size()) {
     
     if(!threadID)
-      std::cout << "Desired LAB angle ranges were not defined!"
-		<< " Defaulting large LAB angle range of (13,180) deg!" << std::endl;
-
-    good_LAB_thetas.push_back(13*deg);
-    good_LAB_thetas.push_back(180*deg);
-    SetOnlyP();
+      std::cout << "Desired angle ranges were not defined! Defaulting to large CM angle range of (15,180) deg!" << std::endl;
+    
+    good_CM_thetas.push_back(15*deg);
+    good_CM_thetas.push_back(180*deg);
+    //SetOnlyP();
   }
-  else if(good_LAB_thetas.size()%2) {
+  if(good_LAB_thetas.size()%2 || good_CM_thetas.size()%2) {
     
     if(!threadID)
-      std::cout << "There must be an even number desired LAB scattering angles!"
-		<< " Defaulting large LAB angle range of (13,180) deg!" << std::endl;
+      std::cout << "There must be an even number desired scattering angles! Defaulting to large CM angle range of (15,180) deg!" << std::endl;
 
-    good_LAB_thetas.push_back(13*deg);
-    good_LAB_thetas.push_back(180*deg);
-    SetOnlyP();
+    good_LAB_thetas.clear();
+    good_CM_thetas.clear();
+    good_CM_thetas.push_back(15*deg);
+    good_CM_thetas.push_back(180*deg);
+    //SetOnlyP();
   }
-  else {
-    for(unsigned int i=0;i<good_LAB_thetas.size();i+=2) {
-      if(good_LAB_thetas.at(i) > good_LAB_thetas.at(i+1)) {
 
-	if(!threadID)
-	  std::cout << "Desired LAB angle ranges were improperly defined!"
-		    << " Defaulting large LAB angle range of (13,180) deg!" << std::endl;
+  for(unsigned int i=0;i<good_LAB_thetas.size();i+=2) {
+    if(good_LAB_thetas.at(i) > good_LAB_thetas.at(i+1)) {
 
-	good_LAB_thetas.clear();
-	good_LAB_thetas.push_back(13*deg);
-	good_LAB_thetas.push_back(180*deg);
-	SetOnlyP();
+      if(!threadID)
+	std::cout << "Desired LAB angle ranges were improperly defined! Defaulting large CM angle range of (15,180) deg!" << std::endl;
+
+      good_LAB_thetas.clear();
+      good_CM_thetas.clear();
+      good_CM_thetas.push_back(15*deg);
+      good_CM_thetas.push_back(180*deg);
+      //SetOnlyP();
 	
-	break;
-      }
+      break;
     }
   }
   
@@ -78,9 +77,13 @@ void Reaction::ConstructRutherfordCM(G4double Ep, G4double Ex) {
       continue;
     
     G4double thetaCM = (pi/(double)nBins)*i;
-    if(KeepThetaCM(thetaCM,Ep,Ex))
-      probDist[i] = 2.0*pi*std::sin(thetaCM)*RutherfordCM(thetaCM,Ep,Ex);    
+    if(KeepThetaCM(thetaCM,Ep,Ex)) //Check LAB angles
+      probDist[i] = 2.0*pi*std::sin(thetaCM)*RutherfordCM(thetaCM,Ep,Ex);
 
+    for(unsigned int j=0;j<good_CM_thetas.size();j+=2) { //Check CM angles
+      if(thetaCM > good_CM_thetas.at(j) && thetaCM < good_CM_thetas.at(j+1))
+	probDist[i] = 2.0*pi*std::sin(thetaCM)*RutherfordCM(thetaCM,Ep,Ex);
+    }
   }
   
   AngleGenerator = new CLHEP::RandGeneral(probDist,nBins);
