@@ -5,7 +5,7 @@ A GEANT4 simulation of multi-step Coulomb excitation experiments.
 
 Requirements
 ------------------
-- G4CLX has only been tested on GEANT4 v11.0.0.
+- G4CLX has only been tested on GEANT4 v11.3.0.
 - The GSL libraries are required
 - In order to use the file correlator.cc to sort and histogram the simulated data, a ROOT installation is required. ROOT is also required to use any of the scripts in the Helpers folder.
 
@@ -128,6 +128,7 @@ The Scattering mode commands are divided into two categories: /Beam and /Reactio
 | Command | Description |
 | --- | --- |
 | /Reaction/AddThetaLAB *double unit* | Add an angle to desired LAB scattering angle ranges. This command must always be used two at a time, with the smaller angle coming first. Otherwise it doesn't work. |
+| /Reaction/AddThetaCM *double unit* | Add an angle to desired CM scattering angle ranges. This command must always be used two at a time, with the smaller angle coming first. Otherwise it doesn't work. |
 | /Reaction/Optimize | Only sample parts of the Rutherford scattering distribution which will result in a particle entering a silicon detector. |
 | /Reaction/OnlyProjectiles | Only consider the projectile when defining desired scattering angle ranges (above commands). |
 | /Reaction/OnlyRecoils | Only consider the recoil when defining the desired scattering angle ranges (above commands). |
@@ -144,6 +145,7 @@ There are no "safety checks" for these commands. For example, you could add an a
 | Command | Description |
 | --- | --- |
 | /Beam/SigmaEn *double unit* | Set Gaussian sigma of the kinetic energy distribution of the incoming beam (Default: 0 MeV) |
+| /Beam/DEDX *double* | Set stopping power of the incident beam in the target. Must be in units of MeV/mm |
 | /Beam/PositionX *double unit* | Set X position of incoming beam spot. (Default: 0 mm) |
 | /Beam/PositionY *double unit* | Set Y position of incoming beam spot. (Default: 0 mm) |
 | /Beam/AngleX *double unit* | Set angle about x-axis of incoming beam. (Default: 0 deg) |

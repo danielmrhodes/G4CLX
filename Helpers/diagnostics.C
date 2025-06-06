@@ -1,34 +1,42 @@
-//#include "/path/to/G4TCX/include/Data_Format.hh"
-//#include "/opt/G4TCX/include/Data_Format.hh"
-#include "/home/rhodes25/programs/G4CLX/include/Data_Format.hh"
-void diagnostics(std::string input_filename = "output-info.dat",
-		 std::string output_filename = "output-info.root") {
+#include "/home/rhodes25/programs/tmpSim/include/Data_Format.hh"
+void diagnostics(std::string input_filename = "info.dat",
+		 std::string output_filename = "info.root") {
 
   if(!strcmp(input_filename.c_str(),output_filename.c_str())) {
     std::cout << "Give your input and output files different names" << std::endl;
     return;
   }
 
-  const int nStatesP = 10;
-  const int nStatesR = 10;
+  const int nStatesP = 19;
+  const int nStatesR = 5;
 
   TH1* hevt = new TH1D("hevt","Event Number",10000,0.0,50000000.0);
   
   TH1* htCM = new TH1D("htCM","Theta CM",360,0.0,180.0);
-  TH1* hEn = new TH1D("hEn","Reaction Energy",1000,200.0,600.0);
+  TH1* htCM_both = new TH1D("htCM_both","Theta CM, Projectile and Recoil",360,0.0,180.0);
+  
+  TH1* hEn = new TH1D("hEn","Reaction Energy",2000,0.0,1000.0);
+  TH2* htCM_En = new TH2D("htCM_En","Reaction Energy vs. Theta CM",360,0.0,180.0,1000,0.0,1000.);
+  TH2* htCM_En_both = new TH2D("htCM_En_both","Reaction Energy vs. Theta CM, Projectile and Recoil",360,0.0,180.0,1000,0.0,1000.);
   
   TH1* hp = new TH1D("hp","Projectile population",nStatesP,0,nStatesP);
   TH1* hr = new TH1D("hr","Recoil population",nStatesR,0,nStatesR);
 
   TH1* htCM_pds = new TH1D("htCM_PDS","Theta CM, projDS Gate",360,0.0,180.0);
+  TH2* htCM_En_pds = new TH2D("htCM_En_pds","Reaction Energy vs. Theta CM, Projectile DS",360,0.0,180.0,1000,0.0,1000.);
+
   TH1* hp_pds = new TH1D("hpPDS","Projectile population, projDS Gate",nStatesP,0,nStatesP);
   TH1* hr_pds = new TH1D("hrPDS","Recoil population, projDS Gate",nStatesR,0,nStatesR);
 
   TH1* htCM_pus = new TH1D("htCM_PUS","Theta CM, projUS Gate",360,0.0,180.0);
+  TH2* htCM_En_pus = new TH2D("htCM_En_pus","Reaction Energy vs. Theta CM, Projectile US",360,0.0,180.0,1000,0.0,1000.);
+
   TH1* hp_pus = new TH1D("hpPUS","Projectile population, projUS Gate",nStatesP,0,nStatesP);
   TH1* hr_pus = new TH1D("hrPUS","Recoil population, projUS Gate",nStatesR,0,nStatesR);
 
   TH1* htCM_rec = new TH1D("htCM_REC","Theta CM, Recoil Gate",360,0.0,180.0);
+  TH2* htCM_En_rec = new TH2D("htCM_En_rec","Reaction Energy vs. Theta CM, Recoil",360,0.0,180.0,1000,0.0,1000.);
+
   TH1* hp_rec = new TH1D("hpREC","Projectile population, Recoil Gate",nStatesP,0,nStatesP);
   TH1* hr_rec = new TH1D("hrREC","Recoil population, Recoil Gate",nStatesR,0,nStatesR);
 
@@ -41,19 +49,19 @@ void diagnostics(std::string input_filename = "output-info.dat",
   std::vector<TH2*> pGrids_rec;
   for(int i=0;i<nStatesP;i++) {
     pGrids.push_back(new TH2D(Form("pG%02d",i),Form("Projectile State %02d Population",i),
-			      360,0.0,180.0,1000,200.0,600.0));
+			      360,0.0,180.0,1000,200.0,1000.0));
 
     pGrids_pds.push_back(new TH2D(Form("pGpds%02d",i),
 				  Form("Projectile State %02d Population, projDS Gate",i),
-				  360,0.0,180.0,1000,200.0,600.0));
+				  360,0.0,180.0,1000,200.0,1000.0));
 
     pGrids_pus.push_back(new TH2D(Form("pGpus%02d",i),
 				  Form("Projectile State %02d Population, projUS Gate",i),
-				  360,0.0,180.0,1000,200.0,600.0));
+				  360,0.0,180.0,1000,200.0,1000.0));
 
     pGrids_rec.push_back(new TH2D(Form("pGrec%02d",i),
 				  Form("Projectile State %02d Population, Recoil Gate",i),
-				  360,0.0,180.0,1000,200.0,600.0));
+				  360,0.0,180.0,1000,200.0,1000.0));
   }
 
   std::vector<TH2*> rGrids;
@@ -62,19 +70,19 @@ void diagnostics(std::string input_filename = "output-info.dat",
   std::vector<TH2*> rGrids_rec;
   for(int i=0;i<nStatesR;i++) {
     rGrids.push_back(new TH2D(Form("rG%02d",i),Form("Recoil State %02d Population",i),
-			      360,0.0,180.0,1000,200.0,600.0));
+			      360,0.0,180.0,1000,200.0,1000.0));
 
     rGrids_pds.push_back(new TH2D(Form("rGpds%02d",i),
 				  Form("Recoil State %02d Population, projDS Gate",i),
-				  360,0.0,180.0,1000,200.0,600.0));
+				  360,0.0,180.0,1000,200.0,1000.0));
 
     rGrids_pus.push_back(new TH2D(Form("rGpus%02d",i),
 				  Form("Recoil State %02d Population, projUS Gate",i),
-				  360,0.0,180.0,1000,200.0,600.0));
+				  360,0.0,180.0,1000,200.0,1000.0));
 
     rGrids_rec.push_back(new TH2D(Form("rGrec%02d",i),
 				  Form("Recoil State %02d Population, Recoil Gate",i),
-				  360,0.0,180.0,1000,200.0,600.0));
+				  360,0.0,180.0,1000,200.0,1000.0));
   }
   
   FILE* input_file = fopen(input_filename.c_str(),"rb");
@@ -85,7 +93,6 @@ void diagnostics(std::string input_filename = "output-info.dat",
     const int num = info.evtNum;
     const int pIndex = info.indexP;
     const int rIndex = info.indexR;
-    
     const double energy = info.beamEn;
     const double thetaCM = info.thetaCM;
     
@@ -96,6 +103,7 @@ void diagnostics(std::string input_filename = "output-info.dat",
     hevt->Fill(num);
     hEn->Fill(energy);
     htCM->Fill(thetaCM);
+    htCM_En->Fill(thetaCM,energy);
     
     hp->Fill(pIndex);
     hr->Fill(rIndex);
@@ -112,6 +120,8 @@ void diagnostics(std::string input_filename = "output-info.dat",
     if(prjDS) {
 
       htCM_pds->Fill(thetaCM);
+      htCM_En_pds->Fill(thetaCM,energy);
+
       hp_pds->Fill(pIndex);
       hr_pds->Fill(rIndex);
       
@@ -126,6 +136,8 @@ void diagnostics(std::string input_filename = "output-info.dat",
     if(prjUS) {
 
       htCM_pus->Fill(thetaCM);
+      htCM_En_pus->Fill(thetaCM,energy);
+      
       hp_pus->Fill(pIndex);
       hr_pus->Fill(rIndex);
       
@@ -140,6 +152,8 @@ void diagnostics(std::string input_filename = "output-info.dat",
     if(rec) {
 
       htCM_rec->Fill(thetaCM);
+      htCM_En_rec->Fill(thetaCM,energy);
+      
       hp_rec->Fill(pIndex);
       hr_rec->Fill(rIndex);
 
@@ -150,7 +164,11 @@ void diagnostics(std::string input_filename = "output-info.dat",
 	rGrids_rec.at(rIndex)->Fill(thetaCM,energy);
       
     }
-    
+
+    if((prjDS || prjUS) && rec) {
+      htCM_both->Fill(thetaCM);
+      htCM_En_both->Fill(thetaCM,energy);
+    }
   }
 
   TFile* outFile = new TFile(output_filename.c_str(),"RECREATE");
@@ -169,7 +187,11 @@ void diagnostics(std::string input_filename = "output-info.dat",
   
   hevt->Write();
   htCM->Write();
+  htCM_both->Write();
   hEn->Write();
+  
+  htCM_En->Write();
+  htCM_En_both->Write();
   
   hp->Write();
   hr->Write();
@@ -186,6 +208,7 @@ void diagnostics(std::string input_filename = "output-info.dat",
 
   outFile->cd("projDS");
   htCM_pds->Write();
+  htCM_En_pds->Write();
   hp_pds->Write();
   hr_pds->Write();
 
@@ -199,6 +222,7 @@ void diagnostics(std::string input_filename = "output-info.dat",
 
   outFile->cd("projUS");
   htCM_pus->Write();
+  htCM_En_pus->Write();
   hp_pus->Write();
   hr_pus->Write();
   
@@ -212,6 +236,7 @@ void diagnostics(std::string input_filename = "output-info.dat",
 
   outFile->cd("Recoil");
   htCM_rec->Write();
+  htCM_En_rec->Write();
   hp_rec->Write();
   hr_rec->Write();
 
