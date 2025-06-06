@@ -117,6 +117,31 @@ void Excitation::ReadLevelSchemeFile(G4int Z, G4int A) {
   
   std::string line, word;
   while(std::getline(file,line)) {
+    
+    G4int state_index, nbr;
+    G4double energy, spin, lifetime; 
+    
+    std::stringstream ss1(line);
+    ss1 >> state_index >> energy >> spin >> lifetime >> nbr;
+   
+    spins.push_back(spin); 
+    
+    energy *= keV;
+    G4ParticleDefinition* part = table->GetIon(Z,A,energy);
+    
+    if((unsigned int)state_index != levels.size())
+      if(!threadID)
+	std::cout << "\033[1;31m" << nuc << " states are out of order in level scheme file " << lfn
+		  << "\033[m" << std::endl;
+    
+    levels.push_back(part);
+    for(int i=0;i<nbr;i++)
+      std::getline(file,line);
+  }
+  file.clear();
+  file.seekg(0);
+  
+  while(std::getline(file,line)) {
 
     G4int state_index, nbr;
     G4double energy, spin, lifetime; 
@@ -126,13 +151,13 @@ void Excitation::ReadLevelSchemeFile(G4int Z, G4int A) {
 
     energy *= keV;
     lifetime *= ps;
-    spins.push_back(spin);
+    //spins.push_back(spin);
 
     if(!threadID)
       std::cout << " " << state_index << " " << energy/keV << " " << spin << " " << lifetime/ps
 	     << " " << nbr;
     
-    G4ParticleDefinition* part = table->GetIon(Z,A,energy);
+    G4ParticleDefinition* part = levels.at(state_index);
     if(nbr) {
       if(!threadID) {
 	part->SetDecayTable(new G4DecayTable());
@@ -176,13 +201,6 @@ void Excitation::ReadLevelSchemeFile(G4int Z, G4int A) {
 						      L0,Lp,del,cc,emit_gamma,proj));
       
     }
-
-    if((unsigned int)state_index != levels.size())
-      if(!threadID)
-	std::cout << "\033[1;31m" << nuc << " states are out of order in level scheme file " << lfn
-		  << "\033[m" << std::endl;
-    
-    levels.push_back(part);
   }
   
   return;
