@@ -1,0 +1,33 @@
+/Mode Scattering
+/Geometry/Gretina/NoDetectors
+/Geometry/S3/Construct
+/Geometry/S3/UpstreamOffset 3.0 cm
+/Geometry/S3/DownstreamOffset 5.2 cm
+/Geometry/Target/Construct
+/Geometry/Target/StandardTarget 48Ti
+#/Geometry/Target/Thickness 0.464 um
+#
+/Reaction/ProjectileZ 80
+/Reaction/ProjectileA 200
+/Reaction/RecoilZ 22
+/Reaction/RecoilA 48
+/Reaction/AddThetaLAB 2 deg
+/Reaction/AddThetaLAB 70 deg
+/Reaction/OnlyRecoils
+/Reaction/Optimize
+#
+/Beam/Energy 745 MeV
+/Beam/SigmaEn 2.0 MeV
+#/Beam/SigmaAX 0.0 deg
+#/Beam/SigmaAY 0.0 deg
+/Beam/PositionX 2.0 mm
+/Beam/PositionY 1.5 mm
+/Beam/SigmaX 0.8 mm
+/Beam/SigmaY 0.8 mm
+#
+/Output/FileName scattering.dat
+/Output/WriteDiagnostics
+/Output/DiagnosticsFileName info.dat
+#
+/run/numberOfThreads 6
+/run/beamOn 10000

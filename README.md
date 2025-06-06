@@ -5,7 +5,7 @@ A GEANT4 simulation of multi-step Coulomb excitation experiments.
 
 Requirements
 ------------------
-- G4CLX has only been tested on GEANT4 v11.3.0.
+- G4CLX has only been tested on GEANT4 v11.3.2
 - The GSL libraries are required
 - In order to use the file correlator.cc to sort and histogram the simulated data, a ROOT installation is required. ROOT is also required to use any of the scripts in the Helpers folder.
 
@@ -70,7 +70,7 @@ The /Geometry commands are common across all modes.
 
 | Command | Description |
 | --- | --- |
-| /Geometry/SeGA/Construct | Include SeGA in the simulation |
+| /Geometry/CHICOX/Construct | Include CHICOX in the simulation |
 | /Geometry/S3/Construct | Include the silicon detectors in the simulation |
 | /Geometry/Target/Construct | Include the target in the simulation |
 | /Geometry/S3/UpstreamOffset *double unit* | Set (positive) z-offset of upstream silicon detector. (Default: 3 cm) |
@@ -85,7 +85,7 @@ The /Geometry commands are common across all modes.
 | /Geometry/Target/Radius *double unit* | Set radius of target. (Default: 0.5 cm) |
 | /Geometry/CheckOverlaps | Check for overlapping physical volumes. |
 
-The various /Construct commands are mandatory if you want to include that particular piece of the setup in the simulation.
+The various /Construct commands are mandatory if you want to include that particular piece of the setup in the simulation. You should only construct one paticle detection arry (CHICOX or the S3 detectors).
 
 Note that the /Geometry/Target/ commands do **NOT** define the recoiling nucleus for the kinematics or excitation, it only defines "bulk" material properties of the target.
 
@@ -124,7 +124,7 @@ The Scattering mode commands are divided into two categories: /Beam and /Reactio
 | --- | --- |
 | /Reaction/AddThetaLAB *double unit* | Add an angle to desired LAB scattering angle ranges. This command must always be used two at a time, with the smaller angle coming first. Otherwise it doesn't work. |
 | /Reaction/AddThetaCM *double unit* | Add an angle to desired CM scattering angle ranges. This command must always be used two at a time, with the smaller angle coming first. Otherwise it doesn't work. |
-| /Reaction/Optimize | Only sample parts of the Rutherford scattering distribution which will result in a particle entering a silicon detector. |
+| /Reaction/Optimize | Only sample parts of the Rutherford scattering distribution which will result in a particle entering a silicon detector. This only works with the S3 detectors. |
 | /Reaction/OnlyProjectiles | Only consider the projectile when defining desired scattering angle ranges (above commands). |
 | /Reaction/OnlyRecoils | Only consider the recoil when defining the desired scattering angle ranges (above commands). |
 | /Reaction/DeltaE *double unit* | Set (positive) deltaE to simulate inelastic scattering. (Default: 0 MeV) |
@@ -132,7 +132,7 @@ The Scattering mode commands are divided into two categories: /Beam and /Reactio
 
 The /Reaction/Optimize and /Reaction/AddThetaLAB commands can be used together. Doing this ensures every simulatd event will result in particle entering a silicon detector.
 
-The use of optional /Reaction commands is strongly recommended. If you do not add a desired scattering angle range, a large scattering angle range of 13 to 180 degrees will be sampled according the Rutheford scattering distribution. Without the /Reaction/Optimize command, there will be useless simulated events where no particle is detected in an S3 detector.
+The use of optional /Reaction commands is strongly recommended. If you do not add a desired scattering angle range, a large scattering angle range of 15 to 180 degrees CM will be sampled according the Rutheford scattering distribution. Without the /Reaction/Optimize command, there will be useless simulated events where no particle is detected in an S3 detector.
 
 There are no "safety checks" for these commands. For example, you could add an angle range corresponding the upstream S3 detector, and then call /Reaction/OnlyRecoils. This would set the entire scattering angle distribution to zero since the recoils can't scatter backwards. If you call /Reaction/Optimize in such a scenario, you will put the simulation in an infinite loop.
 
@@ -140,7 +140,7 @@ There are no "safety checks" for these commands. For example, you could add an a
 | Command | Description |
 | --- | --- |
 | /Beam/SigmaEn *double unit* | Set Gaussian sigma of the kinetic energy distribution of the incoming beam (Default: 0 MeV) |
-| /Beam/DEDX *double* | Set stopping power of incident beam in the target. Must be in units of MeV/mm |
+| /Beam/DEDX *double* | Set stopping power of the incident beam in the target. Must be in units of MeV/mm |
 | /Beam/PositionX *double unit* | Set X position of incoming beam spot. (Default: 0 mm) |
 | /Beam/PositionY *double unit* | Set Y position of incoming beam spot. (Default: 0 mm) |
 | /Beam/AngleX *double unit* | Set angle about x-axis of incoming beam. (Default: 0 deg) |

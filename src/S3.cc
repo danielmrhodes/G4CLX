@@ -2,10 +2,15 @@
 
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
+#include "G4Color.hh"
 #include "G4VisAttributes.hh"
+#include "G4SDManager.hh"
 #include "G4NistManager.hh"
-#include "G4Tubs.hh"
+#include "G4RunManager.hh"
+#include "G4AssemblyVolume.hh"
 #include "G4Box.hh"
+#include "G4Cons.hh"
+#include "G4Sphere.hh"
 #include "G4SubtractionSolid.hh"
 
 S3::S3() {
@@ -25,17 +30,17 @@ void S3::Placement(G4LogicalVolume* world, G4double USoff, G4double DSoff, G4boo
   G4VisAttributes* vis1 = new G4VisAttributes(G4Colour::Yellow());
   G4VisAttributes* vis2 = new G4VisAttributes(G4Colour::Red());
   G4VisAttributes* vis3 = new G4VisAttributes(G4Colour::Brown());
-  //G4VisAttributes* vis4 = new G4VisAttributes(G4Colour::Grey());
-  //G4VisAttributes* vis5 = new G4VisAttributes(G4Colour::White());
+  G4VisAttributes* vis4 = new G4VisAttributes(G4Colour::Grey());
+  G4VisAttributes* vis5 = new G4VisAttributes(G4Colour::White());
   vis1->SetVisibility(true);
   vis1->SetForceSolid(true);
   vis2->SetVisibility(true);
   vis2->SetForceSolid(true);
   vis3->SetVisibility(true);
   vis3->SetForceSolid(true);
-  //vis4->SetVisibility(true);
-  //vis4->SetForceSolid(true);
-  //vis5->SetVisibility(true);
+  vis4->SetVisibility(true);
+  vis4->SetForceSolid(true);
+  vis5->SetVisibility(true);
 
   G4NistManager* nist = G4NistManager::Instance();
   
@@ -126,18 +131,25 @@ void S3::Placement(G4LogicalVolume* world, G4double USoff, G4double DSoff, G4boo
   
   G4LogicalVolume* pcb_holderL = new G4LogicalVolume(pcb_holderS,delrin,"pcb_hL");
   pcb_holderL->SetVisAttributes(vis3);
-  
-  new G4PVPlacement(0,G4ThreeVector(0,0,DSoff),pcb_holderL,"pcbH",world,false,1,check);
-  new G4PVPlacement(0,G4ThreeVector(0,0,-USoff),pcb_holderL,"pcbH",world,false,0,check);
 
+  G4RotationMatrix* rotZ = new G4RotationMatrix(G4RotationMatrix::IDENTITY);
+  rotZ->rotateZ(22.5*deg);
+  
+  new G4PVPlacement(rotZ,G4ThreeVector(0,0,DSoff),pcb_holderL,"pcbH",world,false,1,check);
+  new G4PVPlacement(rotZ,G4ThreeVector(0,0,-USoff),pcb_holderL,"pcbH",world,false,0,check);
+  
   /*
-  //Beam pipe
-  G4Tubs* pipeS = new G4Tubs("pipeS",3.75*cm,4.0*cm,0.25*m,0.0,2.0*pi);
-  G4LogicalVolume* pipeL = new G4LogicalVolume(pipeS,al,"pipeL");
-  pipeL->SetVisAttributes(vis4);
+  //Target Chamber
+  G4Material* al = nist->FindOrBuildMaterial("G4_Al");
+  G4double chamber_outter_radius = 10.0*cm;
+  G4double chamber_thickness = 1.6*mm;
   
-  new G4PVPlacement(0,G4ThreeVector(),pipeL,"pipe",world,false,0,check);
+  G4Sphere* chamberS = new G4Sphere("chamberS",chamber_outter_radius - chamber_thickness,chamber_outter_radius,0.0,2.0*pi,0.0,pi);
+  G4LogicalVolume* chamberL = new G4LogicalVolume(chamberS,al,"chamberL");
+  chamberL->SetVisAttributes(vis5);
+  
+  new G4PVPlacement(0,G4ThreeVector(),chamberL,"chamber",world,false,1,check);
   */
-  
+
   return;
 }

@@ -1,5 +1,5 @@
 #include "Physics_List.hh"
-#include "Physics_Constructor.hh"
+#include "EmStandardPhysics_option4_Atima.hh"
 
 Physics_List::Physics_List() : G4VModularPhysicsList() {;}
 Physics_List::~Physics_List() {;}
@@ -7,17 +7,17 @@ Physics_List::~Physics_List() {;}
 void Physics_List::ConstructProcess() {
   
   AddTransportation();
-
-  Physics_Constructor emPhysicsList;
-  emPhysicsList.ConstructProcess();
   
+  EmStandardPhysics_option4_Atima emPhysicsList;
+  emPhysicsList.ConstructProcess();  
+
   return;
 }
 
 void Physics_List::ConstructParticle() {
   
-  Physics_Constructor emPhysicsList;
-  emPhysicsList.ConstructParticle(); 
+  EmStandardPhysics_option4_Atima emPhysicsList;
+  emPhysicsList.ConstructParticle();
   
   return;
   

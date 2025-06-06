@@ -8,7 +8,7 @@ Tracking_Action::Tracking_Action()  {
 Tracking_Action::~Tracking_Action() {}
 
 void Tracking_Action::PreUserTrackingAction(const G4Track* track) {
-
+  
   switch(mode) {
 
     case Primary_Generator::MODE::Scattering: {

@@ -19,11 +19,13 @@ public:
   void SetTrackingAction(Tracking_Action* tr) {trkAct = tr;}
   
 private:
+
+  G4double posRes;
   
   Gamma_Hit_Collection* HC;
   Tracking_Action* trkAct;
 
-  //Map a detector to a list of track ids
+  //Maps a detector to a list of track ids
   std::map<G4int,std::vector<G4int>> detMap;
   
 };

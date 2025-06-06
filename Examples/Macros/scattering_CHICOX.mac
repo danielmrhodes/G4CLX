@@ -1,0 +1,33 @@
+/Mode Scattering
+/Geometry/Gretina/NoDetectors
+/Geometry/ChicoX/Construct
+/Geometry/Target/Construct
+/Geometry/Target/StandardTarget 48Ti
+#/Geometry/Target/Thickness 0.441 um
+#
+/Reaction/ProjectileZ 34
+/Reaction/ProjectileA 77
+/Reaction/RecoilZ 22
+/Reaction/RecoilA 48
+/Reaction/AddThetaCM 20 deg
+/Reaction/AddThetaCM 179 deg
+#/Reaction/AddThetaLAB 2 deg
+#/Reaction/AddThetaLAB 85 deg
+#/Reaction/OnlyRecoils
+#
+/Beam/Energy 178 MeV
+/Beam/SigmaEn 1.0 MeV
+/Beam/DEDX 14900.0 #MeV/mm
+#/Beam/SigmaAX 0.0 deg
+#/Beam/SigmaAY 0.0 deg
+#/Beam/PositionX -1.2 mm
+#/Beam/PositionY 0.5 mm
+#/Beam/SigmaX 1.1 mm
+#/Beam/SigmaY 1.1 mm
+#
+/Output/FileName scattering.dat
+/Output/WriteDiagnostics
+/Output/DiagnosticsFileName info.dat
+#
+/run/numberOfThreads 6
+/run/beamOn 250000

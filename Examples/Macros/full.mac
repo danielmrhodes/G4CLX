@@ -1,32 +1,45 @@
 /Mode Full
-/Geometry/SeGA/Construct
-/Geometry/S3/Construct
-/Geometry/S3/UpstreamOffset 3.0 cm
-/Geometry/S3/DownstreamOffset 3.0 cm
+/Geometry/Gretina/detector/enableCapsules
+/Geometry/Gretina/detector/enableCryostats
+/Geometry/Gretina/Shell Greta
+/Geometry/ChicoX/Construct
 /Geometry/Target/Construct
-/Geometry/Target/StandardTarget 48Ti
+/Geometry/Target/StandardTarget 208Pb
+/Geometry/Target/Thickness 0.40 um
 #
-/Reaction/ProjectileZ 48
-/Reaction/ProjectileA 106
-/Reaction/RecoilZ 22
-/Reaction/RecoilA 48
+/Reaction/ProjectileZ 62
+/Reaction/ProjectileA 148
+/Reaction/RecoilZ 82
+/Reaction/RecoilA 208
 /Reaction/AddThetaLAB 16 deg
-/Reaction/AddThetaLAB 58 deg
-/Reaction/Optimize
+/Reaction/AddThetaLAB 177 deg
+/Reaction/OnlyProjectiles
+#/Reaction/OnlyRecoils
+#/Reaction/Optimize
 #
-/Beam/Energy 318 MeV
+#/Beam/Energy 658 MeV
+/Beam/Energy 526 MeV
+/Beam/SigmaEn 1.2 MeV
+#/Beam/SigmaAX 0.0 deg
+#/Beam/SigmaAY 0.0 deg
+#/Beam/PositionX -1.2 mm
+#/Beam/PositionY 0.5 mm
+/Beam/SigmaX 1.1 mm
+/Beam/SigmaY 1.1 mm
 #
-/Excitation/Projectile/LevelScheme Examples/LevelSchemes/Full/cd106.lvl
-/Excitation/Projectile/Probabilities Examples/Probabilities/cd106_on_ti48.prb
-/Excitation/Projectile/StatisticalTensors Examples/StatisticalTensors/cd106_on_ti48.ten
-/Excitation/Recoil/LevelScheme Examples/LevelSchemes/Full/ti48.lvl
-/Excitation/Recoil/Probabilities Examples/Probabilities/ti48_by_cd106.prb
-/Excitation/Recoil/StatisticalTensors Examples/StatisticalTensors/ti48_by_cd106.ten
+/Excitation/Projectile/LevelScheme sm148.lvl
+/Excitation/Projectile/Probabilities sm148_on_pb208_LE.prb
+/Excitation/Projectile/StatisticalTensors sm148_on_pb208_LE.ten
+#/Excitation/Projectile/OnlyConsiderState 1
+/Excitation/Recoil/LevelScheme pb208.lvl
+/Excitation/Recoil/Probabilities pb208_by_sm148_LE.prb
+/Excitation/Recoil/StatisticalTensors pb208_by_sm148_LE.ten
+#/Excitation/Recoil/OnlyConsiderState 1
 #
-/Output/OnlyWriteCoincidences
 /Output/FileName full.dat
+/Output/OnlyWriteCoincidences
 /Output/WriteDiagnostics
 /Output/DiagnosticsFileName info.dat
 #
-/run/numberOfThreads 12
-/run/beamOn 1000000
+/run/numberOfThreads 6
+/run/beamOn 100000

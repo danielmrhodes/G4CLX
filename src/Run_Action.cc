@@ -3,6 +3,7 @@
 #include "Event_Action.hh"
 #include "Tracking_Action.hh"
 #include "IonSD.hh"
+#include "PPAC_SD.hh"
 #include "GammaSD.hh"
 
 #include "G4Run.hh"
@@ -31,18 +32,18 @@ Run_Action::~Run_Action() {
 }
 
 void Run_Action::BeginOfRunAction(const G4Run* aRun) {
-
+  
   if(IsMaster()) {
     G4int num = ((G4MTRunManager*)G4MTRunManager::GetRunManager())->GetNumberOfThreads();
-
+    
     std::cout << "\nUsing " << num << " thread";
     if(num > 1)
       std::cout << "s";
     std::cout << " for the simulation" << std::endl;
-
+    
     return;
-  }  
-
+  }
+  
   G4int threadID = G4Threading::G4GetThreadId(); 
   G4WorkerRunManager* Rman = (G4WorkerRunManager*)G4MTRunManager::GetRunManager();
 
@@ -94,10 +95,18 @@ void Run_Action::BeginOfRunAction(const G4Run* aRun) {
   switch(mode) {
     case Primary_Generator::MODE::Scattering: {
 
-      IonSD* iSD = (IonSD*)SDman->FindSensitiveDetector("IonTracker");
-      iSD->SetProjectileName(gen->GetProjectileName());
-      iSD->SetRecoilName(gen->GetRecoilName());
+      IonSD* iSD = (IonSD*)SDman->FindSensitiveDetector("IonTracker",false);
+      if(iSD) {
+	iSD->SetProjectileName(gen->GetProjectileName());
+	iSD->SetRecoilName(gen->GetRecoilName());
+      }
 
+      PPAC_SD* pSD = (PPAC_SD*)SDman->FindSensitiveDetector("PPAC_Tracker",false);
+      if(pSD) {
+	pSD->SetProjectileName(gen->GetProjectileName());
+	pSD->SetRecoilName(gen->GetRecoilName());
+      }
+      
       description = " two-body scattering events";
       
       break;
@@ -105,7 +114,7 @@ void Run_Action::BeginOfRunAction(const G4Run* aRun) {
     }
     case Primary_Generator::MODE::Source: {
 
-      GammaSD* gSD = (GammaSD*)SDman->FindSensitiveDetector("GammaTracker");
+      GammaSD* gSD = (GammaSD*)SDman->FindSensitiveDetector("GammaTracker",false);
       gSD->SetTrackingAction(trkAct);
       
       description = " source gamma-ray events";
@@ -115,11 +124,19 @@ void Run_Action::BeginOfRunAction(const G4Run* aRun) {
     }
     case Primary_Generator::MODE::Full: {
 
-      IonSD* iSD = (IonSD*)SDman->FindSensitiveDetector("IonTracker");
-      iSD->SetProjectileName(gen->GetProjectileName());
-      iSD->SetRecoilName(gen->GetRecoilName());
+      IonSD* iSD = (IonSD*)SDman->FindSensitiveDetector("IonTracker",false);
+      if(iSD) {
+	iSD->SetProjectileName(gen->GetProjectileName());
+	iSD->SetRecoilName(gen->GetRecoilName());
+      }
       
-      GammaSD* gSD = (GammaSD*)SDman->FindSensitiveDetector("GammaTracker");
+      PPAC_SD* pSD = (PPAC_SD*)SDman->FindSensitiveDetector("PPAC_Tracker",false);
+      if(pSD) {
+	pSD->SetProjectileName(gen->GetProjectileName());
+	pSD->SetRecoilName(gen->GetRecoilName());
+      }
+      
+      GammaSD* gSD = (GammaSD*)SDman->FindSensitiveDetector("GammaTracker",false);
       gSD->SetTrackingAction(trkAct);
 
       trkAct->SetProjectileName(gen->GetProjectileName());

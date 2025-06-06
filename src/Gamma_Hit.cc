@@ -2,11 +2,5 @@
 
 G4ThreadLocal G4Allocator<Gamma_Hit>* Gamma_Hit_Allocator = 0;
 
-void Gamma_Hit::SetDetSeg(G4int id) {
-
-  seg = id%100;
-  det = (id-seg)/100;
-  
-  return;
-  
-}
+Gamma_Hit::Gamma_Hit() : fep(false), pfep(false) {;}
+Gamma_Hit::~Gamma_Hit() {;}

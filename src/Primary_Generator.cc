@@ -1,5 +1,5 @@
 #include "Primary_Generator.hh"
-#include "Detector_Construction.hh"
+#include "DetectorConstruction.hh"
 #include "Gamma_Decay.hh"
 
 #include "G4GenericIon.hh"
@@ -12,6 +12,7 @@
 
 #include "G4MTRunManager.hh"
 #include "G4EmCalculator.hh"
+#include "G4Threading.hh"
 
 Primary_Generator::Primary_Generator() {
 
@@ -128,7 +129,7 @@ void Primary_Generator::GeneratePrimaries(G4Event* evt) {
 }
 
 void Primary_Generator::GenerateScatteringPrimaries(G4Event* evt) {
-
+  
  label:
   
   //Choose thetaCM 
@@ -187,7 +188,7 @@ void Primary_Generator::GenerateScatteringPrimaries(G4Event* evt) {
   gun->SetParticlePosition(pos);
   gun->SetParticleMomentumDirection(rdir);
   gun->GeneratePrimaryVertex(evt);
-
+  
   return;
 }
 
@@ -216,7 +217,7 @@ void Primary_Generator::GenerateSourcePrimaries(G4Event* evt) {
 }
 
 void Primary_Generator::GenerateFullPrimaries(G4Event* evt) {
-
+  
  label:
   
   //Choose thetaCM 
@@ -235,7 +236,7 @@ void Primary_Generator::GenerateFullPrimaries(G4Event* evt) {
   pI = exciteP->ChooseState(en,th);
   rI = exciteR->ChooseState(en,th);
 
-  //DeltaE for inelastic scattering
+  //DelatE for inelastic scattering
   G4double ex = 0.0*MeV;
   ex += exciteP->GetExcitation(pI);
   ex += exciteR->GetExcitation(rI);
@@ -279,7 +280,7 @@ void Primary_Generator::GenerateFullPrimaries(G4Event* evt) {
   Gamma_Decay::SetRecoilPolarization(exciteR->GetPolarization(rI,en,th,phiB));
   
   //Beam vertex
-  gun->SetParticleDefinition(exciteP->GetDefinition(pI)); 
+  gun->SetParticleDefinition(exciteP->GetDefinition(pI));
   gun->SetParticleEnergy(reac->KE_LAB(th,en,ex));
   gun->SetParticlePosition(pos);
   gun->SetParticleMomentumDirection(bdir);
@@ -373,37 +374,37 @@ void Primary_Generator::UpdateReaction() {
   reac->SetRecoilMass(recoilGS->GetPDGMass());
   reac->ConstructRutherfordCM(beam_En,deltaE);
   
-  Detector_Construction* con =
-    (Detector_Construction*)G4MTRunManager::GetRunManager()->GetUserDetectorConstruction();
+  DetectorConstruction* con =
+    (DetectorConstruction*)G4MTRunManager::GetRunManager()->GetUserDetectorConstruction();
   
   s3_0 = G4ThreeVector(0.0,0.0,-con->GetUS_Offset());
   s3_1 = G4ThreeVector(0.0,0.0,con->GetDS_Offset());
-
+  
   G4Material* mat = con->GetTargetMaterial();
   if(mat) {
-
+    
     if(dedx < 0.0) {
       G4EmCalculator calc;
       dedx = calc.ComputeTotalDEDX(beam_En,projGS,mat);
     }
     width = con->GetTargetThickness();
   }
-
+  
   if(dedx < 0.0)
     dedx = 0.0;
 
   G4int threadID = G4Threading::G4GetThreadId();
   if(!threadID)
     std::cout << "Incident stopping power: " << dedx/(MeV/um) << " MeV/um" << std::endl;
-  
+
   return;
 }
 
 
 G4bool Primary_Generator::CheckIntersections(const G4ThreeVector& bdir, const G4ThreeVector& rdir,
 					     const G4ThreeVector& pos) {
+
   /*
-  //No detector restrictions
   if(onlyP)  //Only projectiles
     return (Intersects(bdir,s3_1-pos) && bdir.getZ() > 0.0) ||
       (Intersects(bdir,s3_0-pos) && bdir.getZ() < 0.0);
@@ -411,6 +412,7 @@ G4bool Primary_Generator::CheckIntersections(const G4ThreeVector& bdir, const G4
   if(onlyR) //Only Recoils, can only be downstream S3
     return Intersects(rdir,s3_1-pos);
   */
+
   //No restrictions
   return (Intersects(bdir,s3_1-pos) && bdir.getZ() > 0.0) || Intersects(rdir,s3_1-pos) ||
     (Intersects(bdir,s3_0-pos) && bdir.getZ() < 0.0);

@@ -25,7 +25,7 @@ struct Header {
   
 }__attribute__((__packed__));
 
-struct SeGAData {
+struct GretaData {
 
   int det, seg;
   float en, x, y, z;
@@ -45,10 +45,27 @@ struct S3Data {
   
 };
 
+struct ChicoXData {
+
+  int id;
+  float en, tm, x, y, z;
+  bool proj, rec;
+
+  bool operator>(const ChicoXData& rhs) const { return en > rhs.en; }
+  
+};
+
 struct RawData { //Simulated data
 
   S3Data sData[5];
-  SeGAData gData[100];
+  GretaData gData[100];
+
+}__attribute__((__packed__));
+
+struct RawDataX { //Simulated data
+
+  ChicoXData cData[2];
+  GretaData gData[100];
 
 }__attribute__((__packed__));
 

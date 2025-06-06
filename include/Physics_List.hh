@@ -10,8 +10,8 @@ public:
   Physics_List();
   ~Physics_List();
 
-  virtual void ConstructProcess();
-  virtual void ConstructParticle();
+  void ConstructProcess();
+  void ConstructParticle();
 
 };
 
