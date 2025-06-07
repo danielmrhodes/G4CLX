@@ -24,7 +24,7 @@ const double beam_mass = 147.9*931.49;
 //Reduce this value by the energy loss in the target
 //const double beam_en = 329.6; //78Kr Aug 2023 Pb Target
 //const double beam_en = 300.0; //78Kr Aug 2023 Pb Target
-//const double beam_en = 630;
+//const double beam_en = 620.0;
 const double beam_en = 490.0;
 
 const int targZ = 82;

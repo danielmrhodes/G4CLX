@@ -313,7 +313,14 @@ void Primary_Generator::Update() {
       projGS->SetPDGLifeTime(-1.0);
       recoilGS->SetPDGLifeTime(-1.0);
 
-      UpdateReaction();
+      G4double dens = UpdateReaction();
+      if(!threadID) {
+	std::cout << "\nIncident stopping power: " << dedx/(MeV/um) << " MeV/um";
+	if(dedx > 0 && width > 0)
+	  std::cout << " = " << (dedx/dens)/(MeV/(mg/(cm*cm))) << " MeV/(mg*cm^2)"
+		    << "\n      -> Total energy spread: " << (dedx*width)/MeV << " MeV";
+	std::cout << std::endl;
+      }
       
       break;
     }
@@ -349,10 +356,18 @@ void Primary_Generator::Update() {
       
       projGS = exciteP->GetDefinition(0);
       recoilGS = exciteR->GetDefinition(0);
-      UpdateReaction();
+      G4double dens = UpdateReaction();
       
       exciteP->BuildStatisticalTensors();
       exciteR->BuildStatisticalTensors();
+    
+      if(!threadID) {
+	std::cout << "\nIncident stopping power: " << dedx/(MeV/um) << " MeV/um";
+	if(dedx > 0 && width > 0)
+	  std::cout << " = " << (dedx/dens)/(MeV/(mg/(cm*cm))) << " MeV/(mg*cm^2)"
+		    << "\n      -> Total energy spread: " << (dedx*width)/MeV << " MeV";
+	std::cout << std::endl;
+      }
       
       break;
     }
@@ -362,7 +377,7 @@ void Primary_Generator::Update() {
   
 }
 
-void Primary_Generator::UpdateReaction() {
+G4double Primary_Generator::UpdateReaction() {
 
   //These two if statements mush come first
   if(onlyP)
@@ -388,16 +403,13 @@ void Primary_Generator::UpdateReaction() {
       dedx = calc.ComputeTotalDEDX(beam_En,projGS,mat);
     }
     width = con->GetTargetThickness();
+    
   }
   
   if(dedx < 0.0)
     dedx = 0.0;
-
-  G4int threadID = G4Threading::G4GetThreadId();
-  if(!threadID)
-    std::cout << "Incident stopping power: " << dedx/(MeV/um) << " MeV/um" << std::endl;
-
-  return;
+  
+  return con->GetTargetDensity();
 }
 
 
