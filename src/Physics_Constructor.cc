@@ -270,8 +270,8 @@ void Physics_Constructor::ConstructProcess() {
   particle = G4GenericIon::GenericIon();
   G4ionIonisation* ionIoni = new G4ionIonisation();
   
-  ionIoni->SetEmModel(new G4BraggIonModel(),0);
-  ionIoni->SetEmModel(new G4AtimaEnergyLossModel(),1);
+  //ionIoni->SetEmModel(new G4BraggIonModel(),0);
+  //ionIoni->SetEmModel(new G4AtimaEnergyLossModel(),1);
   //ionIoni->SetEmModel(new G4LindhardSorensenIonModel(),2);
   //ionIoni->SetEmModel(new G4IonParametrisedLossModel(),1);
   //ionIoni->SetFluctModel(new G4AtimaFluctuations());
