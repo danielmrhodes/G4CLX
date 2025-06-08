@@ -42,8 +42,10 @@ int main(int argc, char** argv) {
   //ChicoX Mult2
   TH2* chico_m2 = new TH2D("chico_m2","ChicoX Mult2 Hit Pattern",20,1,21,20,1,21);
   TH1* chico_dphi = new TH1D("chico_dphi","ChicoX Mult2 Phi Difference",720,0.0,360.0);
+
+  TH2* chico_kin_m2 = new TH2D("chico_kin_m2","ChicoX Mult2 Energy vs Angle",720,0.0,180.,2000,0.0,1000.0);
   
-  TH2* chicoTP_m2 = new TH2D("chicoTP_m2","ChicoX Mult2 Theta-Phi Surface (Both Particles)",720,0.0,180.0,1440,0.0,360.0);
+  TH2* chicoTP_m2 = new TH2D("chicoTP_m2","ChicoX Mult2 Theta-Phi Surface",720,0.0,180.0,1440,0.0,360.0);
   TH2* chicoTP_m2_proj = new TH2D("chicoTP_m2_proj","ChicoX Mult2 Theta-Phi Surface, Projectile Gate",720,0.0,180.0,1440,0.0,360.0);
   TH2* chicoTP_m2_rec = new TH2D("chicoTP_m2_rec","ChicoX Mult2 Theta-Phi Surface, Recoil Gate",720,0.0,180.0,1440,0.0,360.0);
 
@@ -300,8 +302,16 @@ int main(int argc, char** argv) {
 	bool rec0 = chic0.rec;
 	double tm0 = rand->Gaus(chic0.tm,sigma_tm);
 	double tm1 = rand->Gaus(chic1.tm,sigma_tm);
+	float en0 = chic0.en;
+	float en1 = chic1.en;
 
 	TVector3 pos0(chic0.x,chic0.y,chic0.z);
+	double theta0_exact = pos0.Theta()*r2d;
+	double phi0_exact = pos0.Phi();
+	if(phi0_exact < 0.0)
+	  phi0_exact += TMath::TwoPi();
+	phi0_exact *= r2d;
+
 	pos0.SetTheta(rand->Gaus(pos0.Theta(),sigma_theta));
 	pos0.SetPhi(rand->Gaus(pos0.Phi(),sigma_phi));
 	pos0.SetX(pos0.X() - beam_X);
@@ -314,6 +324,12 @@ int main(int argc, char** argv) {
 	phi0 *= r2d;
 	
 	TVector3 pos1(chic1.x,chic1.y,chic1.z);
+	double theta1_exact = pos1.Theta()*r2d;
+	double phi1_exact = pos1.Phi();
+	if(phi1_exact < 0.0)
+	  phi1_exact += TMath::TwoPi();
+	phi1_exact *= r2d;
+
 	pos1.SetTheta(rand->Gaus(pos1.Theta(),sigma_theta));
 	pos1.SetPhi(rand->Gaus(pos1.Phi(),sigma_phi));
 	pos1.SetX(pos1.X() - beam_X);
@@ -331,9 +347,12 @@ int main(int argc, char** argv) {
 
 	chico_m2->Fill(id0,id1);
 	chico_m2->Fill(id1,id0);
-	chicoTP_m2->Fill(theta0,phi0);
-	chicoTP_m2->Fill(theta1,phi1);
+	chicoTP_m2->Fill(theta0_exact,phi0_exact);
+	chicoTP_m2->Fill(theta1_exact,phi1_exact);
 	
+	chico_kin_m2->Fill(theta0_exact,en0);
+	chico_kin_m2->Fill(theta1_exact,en1);
+
 	chico_dphi->Fill(std::abs(phi_diff));
 	chico_pid->Fill(theta0,tdiff);
 	chico_pid2->Fill(theta_diff,tdiff);
@@ -341,7 +360,7 @@ int main(int argc, char** argv) {
 
 	if(proj0) {
 
-          chicoTP_m2_proj->Fill(theta0,phi0); 
+          chicoTP_m2_proj->Fill(theta0_exact,phi0_exact); 
 	  chico_pid_proj->Fill(theta0,tdiff);
  	  chico_pid2_proj->Fill(theta_diff,tdiff);
 	  chico_ang_proj->Fill(theta0,theta1);
@@ -349,7 +368,7 @@ int main(int argc, char** argv) {
         }
 	if(rec0) {
 	  
-          chicoTP_m2_rec->Fill(theta0,phi0);
+          chicoTP_m2_rec->Fill(theta0_exact,phi0_exact);
           chico_pid_rec->Fill(theta0,tdiff);
 	  chico_pid2_rec->Fill(theta_diff,tdiff);
 	  chico_ang_rec->Fill(theta0,theta1);
@@ -849,6 +868,8 @@ int main(int argc, char** argv) {
   
   chico_m2->Write();
   chico_dphi->Write();
+
+  chico_kin_m2->Write();
 
   chicoTP_m2->Write();
   chicoTP_m2_proj->Write();
