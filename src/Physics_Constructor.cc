@@ -265,7 +265,7 @@ void Physics_Constructor::ConstructProcess() {
   // generic ion
   particle = G4GenericIon::GenericIon();
   G4ionIonisation* ionIoni = new G4ionIonisation();
-  ionIoni->SetEmModel(new G4LindhardSorensenIonModel());
+  //ionIoni->SetEmModel(new G4LindhardSorensenIonModel());
   
   //ph->RegisterProcess(hmsc, particle);
   ph->RegisterProcess(ionIoni, particle);
