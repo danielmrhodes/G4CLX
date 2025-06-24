@@ -12,7 +12,11 @@ public:
 
   //void MakeG10();
   void Placement(G4LogicalVolume* world,  G4bool check = false);
-  //private:
+  
+private:
+
+  void MakeChamber(G4LogicalVolume* world,  G4bool check = false);
+
 };
 
 #endif

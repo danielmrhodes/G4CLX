@@ -84,19 +84,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   }
 
   if(shellStatus == "full"  || shellStatus == "north" || shellStatus == "south") {
-    
     Gretina_NSCL_Shell* Shell = new Gretina_NSCL_Shell();
     Shell->setNorthOffset(northOffset);
     Shell->setSouthOffset(southOffset);
     Shell->Placement(shellStatus);
   }
-  else if(shellStatus == "Greta" ||
-	  shellStatus == "GretaLH" || 
-	  shellStatus == "Greta_North" ||
-	  shellStatus == "Greta_South" ||
-	  shellStatus == "GretaLH_North" ||
+  else if(shellStatus == "Greta" || shellStatus == "GretaLH" || shellStatus == "Greta_North" || shellStatus == "Greta_South" || shellStatus == "GretaLH_North" ||
 	  shellStatus == "GretaLH_South" ) {
-    
     Greta_Shell* Shell = new Greta_Shell();
     Shell->setNorthOffset(northOffset);
     Shell->setSouthOffset(southOffset);
@@ -306,11 +300,14 @@ void DetectorConstruction::DefineMaterials() {
   G4Element* elementC  = new G4Element("Carbon","C",6.,12.011*g/mole);
   G4Element* elementN  = new G4Element("Nitrogen","N",7.,14.00674*g/mole);
   G4Element* elementO  = new G4Element("Oxygen","O",8.,15.9994*g/mole);
-  //G4Element* elementMg = new G4Element("Magnesium", "Mg", 12., 24.3050*g/mole);
+  G4Element* elementMg = new G4Element("Magnesium", "Mg", 12., 24.3050*g/mole);
   //G4Element* elementAl = new G4Element("Aluminum","Al",13.,26.9815*g/mole);
   G4Element* elementSi = new G4Element("Silicon","Si",14.,28.0855*g/mole);
+  G4Element* elementP = new G4Element("Phosphorous","P",15.,30.974*g/mole);
+  G4Element* elementS = new G4Element("Sulphur","S",16,32.065*g/mole);
   //G4Element* elementTi = new G4Element("Titanium","Ti",22.,47.90*g/mole);
   //G4Element* elementV  = new G4Element("Vanadium","V",23.,50.9415*g/mole);
+  G4Element* elementCr = new G4Element("Chromium","Cr",24.,51.996*g/mole);
   G4Element* elementFe = new G4Element("Iron","Fe",26.,55.845*g/mole);
   G4Element* elementCo = new G4Element("Cobalt","Co",27.,58.9332*g/mole);
   G4Element* elementNi = new G4Element("Nickel","Ni",28.,58.6934*g/mole);
@@ -374,6 +371,11 @@ void DetectorConstruction::DefineMaterials() {
   kapton->AddElement(elementO,0.209424);
   kapton->AddElement(elementH,0.026178);
 
+  G4Material* mylar = new G4Material("Mylar", 1.39*g/cm3, 3);
+  mylar->AddElement(elementC,10);
+  mylar->AddElement(elementH,8);
+  mylar->AddElement(elementO,4);
+
   G4Material* LaBr3 = new G4Material("LaBr3",5.08*g/cm3,2);
   LaBr3->AddElement(elementLa,0.25);
   LaBr3->AddElement(elementBr,0.75);
@@ -388,6 +390,15 @@ void DetectorConstruction::DefineMaterials() {
   ssteel->AddElement(elementC,0.04);
   ssteel->AddElement(elementFe,0.88);
   ssteel->AddElement(elementCo,0.08);
+
+  G4Material* stainless = new G4Material("Stainless", 8.0*g/cm3, 7);
+  stainless->AddElement(elementFe,0.705);
+  stainless->AddElement(elementCr,0.18);
+  stainless->AddElement(elementNi,0.09);
+  stainless->AddElement(elementMg,0.02);
+  stainless->AddElement(elementP,0.002);
+  stainless->AddElement(elementC,0.0015);
+  stainless->AddElement(elementS,0.0015);
 
   new G4Material("Be",4.,9.012182*g/mole,1.84*g/cm3);
   new G4Material("C",6.,12.011*g/mole,2.15*g/cm3);

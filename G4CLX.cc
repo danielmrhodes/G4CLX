@@ -27,10 +27,10 @@ int main(int argc, char** argv) {
     UI->ApplyCommand("/Geometry/ChicoX/Construct");
     UI->ApplyCommand("/Geometry/Target/Construct");
     
-    UI->ApplyCommand("/Geometry/Gretina/NoDetectors");
-    //UI->ApplyCommand("/Geometry/Gretina/detector/enableCapsules");
-    //UI->ApplyCommand("/Geometry/Gretina/detector/enableCryostats"); 
-    //UI->ApplyCommand("/Geometry/Gretina/Shell Greta"); 
+    //UI->ApplyCommand("/Geometry/Gretina/NoDetectors");
+    UI->ApplyCommand("/Geometry/Gretina/detector/enableCapsules");
+    UI->ApplyCommand("/Geometry/Gretina/detector/enableCryostats"); 
+    UI->ApplyCommand("/Geometry/Gretina/Shell full"); 
     
     runManager->SetNumberOfThreads(1);
     runManager->Initialize();
