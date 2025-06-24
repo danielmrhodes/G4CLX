@@ -3,7 +3,7 @@ G4CLX
 A GEANT4 simulation of multi-step Coulomb excitation experiments.
 =================================================================
 
-Everything related to the GRETINA/GRETA array was taken from the UCGretina simulation package [4]. Refer to Ref. [4] for more information (inclding GRETINA related UI commands).
+Everything related to the GRETINA/GRETA array was taken from the UCGretina simulation package [4]. Refer to Ref. [4] for more information (including the GRETINA related UI commands).
 
 Requirements
 ------------------

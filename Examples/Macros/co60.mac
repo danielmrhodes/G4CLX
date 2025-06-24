@@ -1,5 +1,7 @@
 /Mode Source
-/Geometry/SeGA/Construct
+/Geometry/Gretina/detector/enableCapsules
+/Geometry/Gretina/detector/enableCryostats
+/Geometry/Gretina/Shell Greta
 #
 /Source/LevelScheme Examples/LevelSchemes/Source/co60.lvl
 #

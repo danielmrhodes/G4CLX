@@ -78,6 +78,11 @@ int main(int argc, char** argv) {
   TH2* detSeg = new TH2D("detSeg","Geta Segment Number vs Detector Number",nDets,1,nDets+1,nSegs,1,nSegs+1);
   TH2* posTP = new TH2D("posTP","Greta Theta-Phi Surface",720,0.0,180.0,1440,0.0,360.0);
 
+  std::vector<TH2*> posTPquad;
+  for(int i=0;i<30;i++) {
+   posTPquad.push_back(new TH2D(Form("posTP_%02d",i),Form("Quad %02d Theta-Phi Surface",i),720,0.0,180.0,1440,0.0,360.0));
+  }
+  
   TH1* gamGate = new TH1D("gamGate","CoreEn with 1332 keV Coinc",16000,0,4000);
   TH1* gammaAngFEP = new TH1D("gamAngFEP","Gamma Gamma Angle",2200,-1.1,1.1);
   
@@ -383,6 +388,7 @@ int main(int argc, char** argv) {
     for(int i=0;i<data.nGr;i++) {
 
       int det = data.greta[i].det;
+      int quad = (det-1)/4;
       double en = data.greta[i].cEn;
       double core_en = rand->Gaus(en,Sigma(en));
       bool fep = data.greta[i].fep;
@@ -412,7 +418,8 @@ int main(int argc, char** argv) {
 	
 	detSeg->Fill(det,seg);
 	posTP->Fill(theta,phi);
-	
+	posTPquad.at(quad)->Fill(theta,phi);	
+      
       }
       
       if(fep) {
@@ -832,6 +839,7 @@ int main(int argc, char** argv) {
   TFile* outFile = new TFile(output_filename,"RECREATE");
   
   outFile->mkdir("Greta");
+  outFile->mkdir("Greta/Quads");
   outFile->mkdir("ChicoX");
   
   outFile->mkdir("Coincidence/ProjectileDS");
@@ -906,6 +914,10 @@ int main(int argc, char** argv) {
 
   gamGate->Write();
   gammaAngFEP->Write();
+
+  outFile->cd("Greta/Quads");
+  for(TH2* h : posTPquad)
+    h->Write();
 
   outFile->cd("Coincidence/ProjectileDS");
 
