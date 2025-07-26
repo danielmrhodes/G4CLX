@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
     //UI->ApplyCommand("/Geometry/Gretina/NoDetectors");
     UI->ApplyCommand("/Geometry/Gretina/detector/enableCapsules");
     UI->ApplyCommand("/Geometry/Gretina/detector/enableCryostats"); 
-    UI->ApplyCommand("/Geometry/Gretina/Shell full"); 
+    //UI->ApplyCommand("/Geometry/Gretina/Shell full"); 
     
     runManager->SetNumberOfThreads(1);
     runManager->Initialize();

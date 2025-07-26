@@ -288,13 +288,22 @@ void Physics_Constructor::ConstructProcess() {
   G4EmModelActivator mact(GetPhysicsName());
 
   //G4ParticleTable* table = G4ParticleTable::GetParticleTable();
-  G4IonTable* table = (G4IonTable*)(G4ParticleTable::GetParticleTable()->GetIonTable());
+  //G4IonTable* table = (G4IonTable*)(G4ParticleTable::GetParticleTable()->GetIonTable());
+  G4IonTable* table = G4IonTable::GetIonTable();
   
-  G4ParticleDefinition* bi209 = table->GetIon(83,209,0.0);
-  bi209->SetPDGLifeTime(-1.0*ps);
+  //Turn off ground state decays
+  for(G4int zz = 1;zz<100;zz++) {
+    for(G4int nn = 1;nn<200;nn++) {
+      G4ParticleDefinition* nuc = table->GetIon(zz,zz+nn,0.0);
+      nuc->SetPDGLifeTime(-1.0*ps);
+    }
+  }
+
+  //G4ParticleDefinition* bi209 = table->GetIon(83,209,0.0);
+  //bi209->SetPDGLifeTime(-1.0*ps);
   
-  G4ParticleDefinition* ge76 = table->GetIon(32,76,0.0);
-  ge76->SetPDGLifeTime(-1.0*ps);
+  //G4ParticleDefinition* ge76 = table->GetIon(32,76,0.0);
+  //ge76->SetPDGLifeTime(-1.0*ps);
 
   return;
 }

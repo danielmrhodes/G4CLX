@@ -174,7 +174,7 @@ void DetectorConstruction::PlaceTarget() {
   if(target_step > 0.0)
     uLim = new G4UserLimits(target_step);
   else
-    uLim = new G4UserLimits(0.05*target_thickness);
+    uLim = new G4UserLimits(0.2*target_thickness);
   
   G4LogicalVolume* logic_target = new G4LogicalVolume(solid_target,target_mat,"Target_Logical",0,0,uLim);
 
