@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
     UI->ApplyCommand("/vis/open OGLSX");
     UI->ApplyCommand("/vis/drawVolume");
 
-    UI->ApplyCommand("/vis/scene/add/axes");
+    //UI->ApplyCommand("/vis/scene/add/axes");
     UI->ApplyCommand("/vis/viewer/set/viewpointThetaPhi 90 20");
     UI->ApplyCommand("/vis/viewer/zoom 3");
 

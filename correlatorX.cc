@@ -32,6 +32,8 @@ int main(int argc, char** argv) {
   TH2* chicoTP_proj = new TH2D("chicoTP_proj","ChicoX Theta-Phi Surface, Projectile Gate",720,0.0,180.0,1440,0.0,360.0);
   TH2* chicoTP_rec = new TH2D("chicoTP_rec","ChicoX Theta-Phi Surface, Recoil Gate",720,0.0,180.0,1440,0.0,360.0);
 
+  TH2* chicoTPw = new TH2D("chicoTPw","ChicoX Theta-Phi Surface weighted by distance",720,0.0,180.0,1440,0.0,360.0);
+
   TH2* chicoTP_m1 = new TH2D("chicoTP_m1","ChicoX Theta-Phi Surface Mult 1",720,0.0,180.0,1440,0.0,360.0);
   TH2* chicoTP_m1_proj = new TH2D("chicoTP_m1_proj","ChicoX Theta-Phi Surface Mult 1, Projectile Gate",720,0.0,180.0,1440,0.0,360.0);
   TH2* chicoTP_m1_rec = new TH2D("chicoTP_m1_rec","ChicoX Theta-Phi Surface Mult 1, Recoil Gate",720,0.0,180.0,1440,0.0,360.0);
@@ -39,6 +41,15 @@ int main(int argc, char** argv) {
   TH2* chicoTR = new TH2D("chicoTR","ChicoX Theta-R Surface",720,0.0,180.0,1000,10,20);
   TH2* chicoPR = new TH2D("chicoPR","ChicoX Phi-R Surface",1440,0.0,360.0,1000,10,20);
 
+  /*
+  std::vector<TH2*> chicoTP_det;
+  std::vector<TH2*> chicoTPw_det;
+  for(int i=0;i<20;i++) {
+    chicoTP_det.push_back(new TH2D(Form("chicoTP_%02d",i),Form("ChicoX PPAC %02d Theta-Phi Surface",i),720,0.0,180.0,1440,0.0,360.0));
+    chicoTPw_det.push_back(new TH2D(Form("chicoTPw_%02d",i),Form("ChicoX PPAC %02d Theta-Phi Surface weighted by distance",i),720,0.0,180.0,1440,0.0,360.0));
+  }
+  */
+  
   //ChicoX Mult2
   TH2* chico_m2 = new TH2D("chico_m2","ChicoX Mult2 Hit Pattern",20,1,21,20,1,21);
   TH1* chico_dphi = new TH1D("chico_dphi","ChicoX Mult2 Phi Difference",720,0.0,360.0);
@@ -84,6 +95,7 @@ int main(int argc, char** argv) {
   }
   
   TH1* gamGate = new TH1D("gamGate","CoreEn with 1332 keV Coinc",16000,0,4000);
+  TH1* gamGate1 = new TH1D("gamGate1","CoreEn with 1836 keV Coinc",16000,0,4000);
   TH1* gammaAngFEP = new TH1D("gamAngFEP","Gamma Gamma Angle",2200,-1.1,1.1);
   
   //Coincidences
@@ -267,6 +279,10 @@ int main(int argc, char** argv) {
       chicoTR->Fill(theta,mag);
       chicoPR->Fill(phi,mag);
 
+      chicoTPw->Fill(theta,phi,mag);
+      //chicoTP_det.at(id-1)->Fill(theta,phi);
+      //chicoTPw_det.at(id-1)->Fill(theta,phi,mag);
+
       if(proj) {
 	chico_kin_proj->Fill(theta,en);
 	chicoTP_proj->Fill(theta,phi);
@@ -445,6 +461,11 @@ int main(int argc, char** argv) {
 	gamGate->Fill(core_en2);
       else if(core_en2 > 1330.0 && core_en2 < 1335.0)
 	gamGate->Fill(core_en1);
+
+      if(core_en1 > 1831.0 && core_en1 < 1842.0)
+	gamGate1->Fill(core_en2);
+      else if(core_en2 > 1831.0 && core_en2 < 1842.0)
+	gamGate1->Fill(core_en1);
 
       if(data.greta[0].fep && data.greta[1].fep) {
 	
@@ -836,6 +857,8 @@ int main(int argc, char** argv) {
   } //End while loop
   std::cout << "Writing histograms to file..." << std::endl;
 
+  chicoTPw->Divide(chicoTP);
+
   TFile* outFile = new TFile(output_filename,"RECREATE");
   
   outFile->mkdir("Greta");
@@ -867,6 +890,8 @@ int main(int argc, char** argv) {
   chicoTP_proj->Write();
   chicoTP_rec->Write();
   
+  chicoTPw->Write();
+
   chicoTP_m1->Write();
   chicoTP_m1_proj->Write();
   chicoTP_m1_rec->Write();
@@ -913,6 +938,7 @@ int main(int argc, char** argv) {
   posTP->Write();
 
   gamGate->Write();
+  gamGate1->Write();
   gammaAngFEP->Write();
 
   outFile->cd("Greta/Quads");

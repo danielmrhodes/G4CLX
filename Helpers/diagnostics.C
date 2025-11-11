@@ -7,7 +7,7 @@ void diagnostics(std::string input_filename = "info.dat",
     return;
   }
 
-  const int nStatesP = 19;
+  const int nStatesP = 20;
   const int nStatesR = 5;
 
   TH1* hevt = new TH1D("hevt","Event Number",10000,0.0,50000000.0);

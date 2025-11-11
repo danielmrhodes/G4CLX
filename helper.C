@@ -11,24 +11,25 @@
 #include "TVector3.h"
 #include "TMath.h"
 
-#include "/home/rhodes25/programs/tmpSim/include/Data_Format.hh"
+#include "/home/rhodes25/programs/G4CLX/include/Data_Format.hh"
 
 ////These should match the parameters defined in the simulation input////
 //Masses in MeV/c^2
 
-const int beamZ = 62;
+const int beamZ = 54;
 //const double beam_mass = 72582.36; //78Kr
-const double beam_mass = 147.9*931.49;
+const double beam_mass = 136.0*931.49;
 
 //MeV
 //Reduce this value by the energy loss in the target
 //const double beam_en = 329.6; //78Kr Aug 2023 Pb Target
 //const double beam_en = 300.0; //78Kr Aug 2023 Pb Target
-const double beam_en = 620.0;
-//const double beam_en = 490.0;
+//const double beam_en = 340.0;
+const double beam_en = 520.0;
 
 const int targZ = 82;
-const double targ_mass = 193688.0; //208Pb
+//const double targ_mass = 193688.0; //208Pb
+const double targ_mass = 208.*931.49;
 
 //Silicon detector Z-offsets (downstream and upstream) (cm)
 const double DS_Offset = 3.3;
@@ -59,7 +60,8 @@ const int Rf = 24;
 
 ////Greta Intrinsic Energy Resolution////
 double Sigma(double en) {
-  return 0.7088 + en*0.00034535; //Not real
+  //return 0.7088 + en*0.00034535; //Not real
+  return 1.19231 + 0.000297631*en + (7.60125e-08)*en*en;
 }
 ////////////////////////////////////////
 

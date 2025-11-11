@@ -95,6 +95,10 @@ void Run_Action::BeginOfRunAction(const G4Run* aRun) {
   switch(mode) {
     case Primary_Generator::MODE::Scattering: {
 
+      GammaSD* gSD = (GammaSD*)SDman->FindSensitiveDetector("GammaTracker",false);
+      if(gSD)
+	gSD->Activate(false);
+
       IonSD* iSD = (IonSD*)SDman->FindSensitiveDetector("IonTracker",false);
       if(iSD) {
 	iSD->SetProjectileName(gen->GetProjectileName());
@@ -116,6 +120,14 @@ void Run_Action::BeginOfRunAction(const G4Run* aRun) {
 
       GammaSD* gSD = (GammaSD*)SDman->FindSensitiveDetector("GammaTracker",false);
       gSD->SetTrackingAction(trkAct);
+
+      IonSD* iSD = (IonSD*)SDman->FindSensitiveDetector("IonTracker",false);
+      if(iSD)
+	iSD->Activate(false);
+
+      PPAC_SD* pSD = (PPAC_SD*)SDman->FindSensitiveDetector("PPAC_Tracker",false);
+      if(pSD)
+	pSD->Activate(false);
       
       description = " source gamma-ray events";
       
