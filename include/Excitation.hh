@@ -36,6 +36,7 @@ public:
   void OnlyConsiderState(G4int index) {considered = index;}
   void SetGSS(G4double sp) {gss = sp;}
   void SimpleConsidered() {simple_considered = true;}
+  void SetIsotropic() {iso = true;}
   
 private:
 
@@ -48,6 +49,7 @@ private:
   Excitation_Messenger* messenger;
   Polarization* polar;
   const G4bool proj;
+  G4bool iso;
 
   G4int threadID;
   

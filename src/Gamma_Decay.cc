@@ -85,7 +85,7 @@ G4DecayProducts* Gamma_Decay::DecayIt(G4double) {
 
   if(emit_gamma) {
     G4double prob = 1.0/(convCoef + 1.0);
-    if(G4UniformRand() < prob) {
+    if(G4UniformRand() <= prob) {
       Etotal= std::sqrt(daughtermass[1]*daughtermass[1] + daughtermomentum*daughtermomentum);
       daughterparticle = new G4DynamicParticle( G4MT_daughters[1],Etotal, direction*(-1.0*daughtermomentum));
       products->PushProducts(daughterparticle);

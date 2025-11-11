@@ -1,5 +1,6 @@
 #include "Excitation.hh"
 #include "Gamma_Decay.hh"
+#include "IPF_Decay.hh"
 #include "Primary_Generator.hh"
 
 #include "G4MTRunManager.hh"
@@ -24,6 +25,7 @@ Excitation::Excitation(G4bool prj) : proj(prj) {
   considered = 0;
   gss = 0.0;
   simple_considered = false;
+  iso = false;
 
   threadID = G4Threading::G4GetThreadId();
   
@@ -193,13 +195,30 @@ void Excitation::ReadLevelSchemeFile(G4int Z, G4int A) {
       if(!considered || state_index == considered)
 	emit_gamma = true;
 
-      if(!threadID)
-	part->GetDecayTable()->Insert(new Gamma_Decay(part,levels.at(index),BR,energy,
-						      ((G4Ions*)(levels.at(index)))->GetExcitationEnergy(),
-						      G4int(2.0*spin + 0.01),
-						      G4int(2.0*spins.at(index) + 0.01),
-						      L0,Lp,del,cc,emit_gamma,proj));
-      
+      if(!threadID) {
+	if(spin > 0.0 || spins.at(index) > 0.0) {
+	  
+	  G4int sp1 = G4int(2.0*spin + 0.01);
+	  G4int sp2 = G4int(2.0*spins.at(index) + 0.01);
+	  if(iso) {
+	    sp1 = 0;
+	    sp2 = 0;
+	  }
+
+	  part->GetDecayTable()->Insert(new Gamma_Decay(part,levels.at(index),BR,energy,
+							((G4Ions*)(levels.at(index)))->GetExcitationEnergy(),
+							sp1,sp2,L0,Lp,del,cc,emit_gamma,proj));
+	}
+	else if(energy - ((G4Ions*)(levels.at(index)))->GetExcitationEnergy() > 1022.0*keV) {
+	  part->GetDecayTable()->Insert(new IPF_Decay(part,levels.at(index),cc,emit_gamma));
+	}
+	else {
+	  if(!threadID) {
+	    std::cout << " \033[1;36m Warning: " << nuc << " has a 0 -> 0 IPF decay (states " << state_index
+		      << " -> " << index << ") which is less than 1022 keV! Skipping this decay\033[m";
+	  }
+	}
+      }
     }
   }
   

@@ -67,6 +67,14 @@ Excitation_Messenger::Excitation_Messenger(Excitation* exc, G4bool prj) : excita
   guidance = "Turn off feeding to the considered state in the " + nuc
     + ". Rescale excitation probabilities";
   sCon_cmd->SetGuidance(guidance);
+
+  cmd_name = path + "IsotropicDecays";
+  iso_cmd = new G4UIcmdWithoutParameter(cmd_name,this);
+  iso_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,G4ApplicationState::G4State_Idle);
+
+  guidance = "Gamma decays in the " + nuc + " will be isotropic";
+  iso_cmd->SetGuidance(guidance);
+
 }
 
 Excitation_Messenger::~Excitation_Messenger() {
@@ -80,7 +88,7 @@ Excitation_Messenger::~Excitation_Messenger() {
   delete pCon_cmd;
   delete pGSS_cmd;
   delete sCon_cmd;
-  
+  delete iso_cmd;
 }
 
 void Excitation_Messenger::SetNewValue(G4UIcommand* command, G4String newValue) {
@@ -122,6 +130,11 @@ void Excitation_Messenger::SetNewValue(G4UIcommand* command, G4String newValue) 
   else if(command == sCon_cmd) {
     excitation->SimpleConsidered();
     message = "Will not include feeding to the " + nuc + " considered state";
+  }
+
+  else if(command == iso_cmd) {
+    excitation->SetIsotropic();
+    message = "Gamma decays in the " + nuc + " will be isotropic";
   }
 
   G4int threadID = G4Threading::G4GetThreadId();

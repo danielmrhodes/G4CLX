@@ -33,6 +33,7 @@ private:
   G4UIcmdWithAnInteger* pCon_cmd; //Only consider this excited state
   G4UIcmdWithADouble* pGSS_cmd; //Ground state spin
   G4UIcmdWithoutParameter* sCon_cmd; //Simple considered state (no feeding)
+  G4UIcmdWithoutParameter* iso_cmd; //Isotropic decays
   
 };
 
