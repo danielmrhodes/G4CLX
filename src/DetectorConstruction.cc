@@ -47,6 +47,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   G4Box* ExpHall_sol = new G4Box("expHall_box",expHall_x,expHall_y,expHall_z);
 
   G4Material* expHall_mat = G4Material::GetMaterial("G4_Galactic");
+
+  //G4UserLimits* ulim = new G4UserLimits(1.0*cm);
   ExpHall_log = new G4LogicalVolume(ExpHall_sol,expHall_mat,"expHall_log",0,0,0);
   ExpHall_phys = new G4PVPlacement(0,G4ThreeVector(),ExpHall_log,"expHall",0,false,0);
   
@@ -160,13 +162,24 @@ void DetectorConstruction::ConstructSDandField() {
 
 void DetectorConstruction::PlaceTarget() {
 
-  //Target material (isotopically pure)
-  target_mat = new G4Material("target_mat",target_density,1); //Bulk material
-  G4Element* target_ele = new G4Element("target_ele","target_symbol",1); //Element
-  G4Isotope* target_iso = new G4Isotope("target_iso",target_Z,target_A,target_mass); //Isotope
-  target_ele->AddIsotope(target_iso,1.0);
-  target_mat->AddElement(target_ele,1.0);
-    
+  if(target_Z != 90) {
+    //Target material (isotopically pure)
+    target_mat = new G4Material("target_mat",target_density,1); //Bulk material
+    G4Element* target_ele = new G4Element("target_ele","target_symbol",1); //Element
+    G4Isotope* target_iso = new G4Isotope("target_iso",target_Z,target_A,target_mass); //Isotope
+    target_ele->AddIsotope(target_iso,1.0);
+    target_mat->AddElement(target_ele,1.0);
+  }
+  else { //ThF4 target
+    G4NistManager* man = G4NistManager::Instance();
+    G4Element* F = man->FindOrBuildElement("F");
+    G4Element* Th = man->FindOrBuildElement("Th");
+
+    target_mat = new G4Material("target_mat",target_density,2);
+    target_mat->AddElement(Th,1);
+    target_mat->AddElement(F,4);
+  }
+
   G4Tubs* solid_target = new G4Tubs("Target_Sol",0*cm,target_radius,
 				    target_thickness/2.0,0.0*deg,360.0*deg);
 
@@ -272,8 +285,16 @@ void DetectorConstruction::SetTarget(G4String target) {
     target_thickness = 984*nm;
     target_radius = 0.5*cm;
   }
+  else if(target == "232Th" || target == "Th232" || target == "Th" || target == "ThF4" || target == "ThF") {
+    target_Z = 90; //ThF4 target made later
+    target_A = 232;
+    target_density = 6.3*g/cm3;
+    target_mass = 308.03*g/mole;
+    target_thickness = 635*nm;
+    target_radius = 0.5*cm;
+  }	
   else
-    G4cout << "\033[1;31mUnrecognized target " << target << ". Defaulting to Pb208\033[m" << G4endl;
+    std::cout << "\033[1;31mUnrecognized target " << target << ". Defaulting to Pb208\033[m" << std::endl;
 
   PrintTarget();
   
@@ -282,12 +303,12 @@ void DetectorConstruction::SetTarget(G4String target) {
 
 void DetectorConstruction::PrintTarget() {
 
-  G4cout << "\t Z: " << target_Z << "\n\t A: " << target_A
-	 << "\n\t Molar Mass: " << G4BestUnit(target_mass,"Mass")
-	 <<  "\n\t Density: "<< G4BestUnit(target_density,"Volumic Mass")
-	 << "\n\t Thickness: " << G4BestUnit(target_thickness,"Length")
-	 << "\n\t Radius: " << G4BestUnit(target_radius,"Length")
-	 << G4endl;
+  std::cout << "\t Z: " << target_Z << "\n\t A: " << target_A
+	    << "\n\t Molar Mass: " << G4BestUnit(target_mass,"Mass")
+	    <<  "\n\t Density: "<< G4BestUnit(target_density,"Volumic Mass")
+	    << "\n\t Thickness: " << G4BestUnit(target_thickness,"Length")
+	    << "\n\t Radius: " << G4BestUnit(target_radius,"Length")
+	    << std::endl;
 
   return;
 }
@@ -300,6 +321,7 @@ void DetectorConstruction::DefineMaterials() {
   G4Element* elementC  = new G4Element("Carbon","C",6.,12.011*g/mole);
   G4Element* elementN  = new G4Element("Nitrogen","N",7.,14.00674*g/mole);
   G4Element* elementO  = new G4Element("Oxygen","O",8.,15.9994*g/mole);
+  //G4Element* elementF  = new G4Element("Flourine","F",9.,18.998*g/mole);
   G4Element* elementMg = new G4Element("Magnesium", "Mg", 12., 24.3050*g/mole);
   //G4Element* elementAl = new G4Element("Aluminum","Al",13.,26.9815*g/mole);
   G4Element* elementSi = new G4Element("Silicon","Si",14.,28.0855*g/mole);
@@ -322,6 +344,7 @@ void DetectorConstruction::DefineMaterials() {
   //G4Element* elementAu = new G4Element("Gold","Au",79.,196.97*g/mole);
   //G4Element* elementPb = new G4Element("Lead","Pb",82.,207.2*g/mole);
   //G4Element* elementBi = new G4Element("Bismuth","Bi",83.,208.98*g/mole);
+  //G4Element* elementTh  = new G4Element("Thorium","Th",90.,232.038*g/mole);
 
   // Germanium isotopes
   G4Isotope* Ge70 = new G4Isotope("Ge70",32,70,69.9242*g/mole);
