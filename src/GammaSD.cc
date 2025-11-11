@@ -26,7 +26,7 @@ G4bool GammaSD::ProcessHits(G4Step* step, G4TouchableHistory*) {
   
   G4double edep = step->GetTotalEnergyDeposit();
   if(!(edep > 0.0))
-    return false;
+    return true;
   
   G4TouchableHandle theTouchable = step->GetPreStepPoint()->GetTouchableHandle();
   G4VSolid* solid = theTouchable->GetSolid(0);
@@ -131,8 +131,9 @@ G4bool GammaSD::ProcessHits(G4Step* step, G4TouchableHistory*) {
   HC->insert(hit);
 
   G4int id = step->GetTrack()->GetTrackID();
-  if(std::find(detMap[detNum].begin(),detMap[detNum].end(),id) == detMap[detNum].end())
-    detMap[detNum].push_back(id);
+  if(std::find(detMap[detNum+1].begin(),detMap[detNum+1].end(),id) == detMap[detNum+1].end())
+    detMap[detNum+1].push_back(id);
+  
   
   return true;
 }
