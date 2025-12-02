@@ -6,9 +6,19 @@
 #include "G4WorkerRunManager.hh"
 #include "G4ProcessManager.hh"
 #include "G4IonTable.hh"
+
 #include "G4Decay.hh"
 #include "G4DecayTable.hh"
-
+#include "G4StepLimiter.hh"
+/*
+#include "G4BraggIonModel.hh"
+#include "G4ionIonisation.hh"
+#include "G4AtimaEnergyLossModel.hh"
+#include "G4AtimaFluctuations.hh"
+#include "G4IonParametrisedLossModel.hh"
+#include "G4LindhardSorensenIonModel.hh"
+#include "G4NuclearStopping.hh"
+*/
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
 
@@ -71,6 +81,7 @@ void Excitation::BuildLevelScheme() {
   
   G4IonTable* table = (G4IonTable*)(G4ParticleTable::GetParticleTable()->GetIonTable());
   G4ParticleDefinition* GS = table->GetIon(Z,A,0.0*MeV);
+  AddProcesses(GS,0);
   if(!threadID)
     GS->SetPDGLifeTime(-1.0);
 
@@ -163,8 +174,11 @@ void Excitation::ReadLevelSchemeFile(G4int Z, G4int A) {
 	part->SetDecayTable(new G4DecayTable());
 	part->SetPDGLifeTime(lifetime);	
       }
-      part->GetProcessManager()->SetParticleType(part);
-      part->GetProcessManager()->AddProcess(new G4Decay(),0,-1,0);
+      AddProcesses(part,nbr);
+      //part->GetProcessManager()->SetParticleType(G4GenericIon::Definition());
+      //part->GetProcessManager()->SetParticleType(part);
+      //part->GetProcessManager()->AddProcess(new G4Decay(),0,-1,1);
+      //part->GetProcessManager()->AddProcess(new G4StepLimiter(),-1,-1,0);
     }
     else {
       if(!threadID) {
@@ -202,6 +216,32 @@ void Excitation::ReadLevelSchemeFile(G4int Z, G4int A) {
       
     }
   }
+  
+  return;
+}
+
+void Excitation::AddProcesses(G4ParticleDefinition* part, G4bool can_decay) {
+  
+  if(can_decay) {
+    part->GetProcessManager()->SetParticleType(part);
+    //part->GetProcessManager()->AddProcess(new G4Decay(),0,-1,1);
+    part->GetProcessManager()->AddProcess(new G4Decay(),1000,-1,1000);
+    //part->GetProcessManager()->AddProcess(new G4StepLimiter(),-1,-1,0);
+  }
+  
+  //G4ionIonisation* ionIoni = new G4ionIonisation();
+  //ionIoni->SetEmModel(new G4BraggIonModel(),0);
+  //ionIoni->SetEmModel(new G4AtimaEnergyLossModel(),1);
+  //ionIoni->SetEmModel(new G4LindhardSorensenIonModel(),2);
+  //ionIoni->SetEmModel(new G4IonParametrisedLossModel(),1);
+  //ionIoni->SetFluctModel(new G4AtimaFluctuations());
+
+  //G4NuclearStopping* pnuc = new G4NuclearStopping();
+  //pnuc->SetMaxKinEnergy(1.0*MeV);
+
+  //part->GetProcessManager()->AddProcess(ionIoni,-1,0,-1);
+  //part->GetProcessManager()->AddProcess(pnuc,-1,0,-1);
+  //part->GetProcessManager()->AddProcess(new G4StepLimiter(),-1,-1,0);
   
   return;
 }

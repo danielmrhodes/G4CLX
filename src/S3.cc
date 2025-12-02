@@ -15,7 +15,8 @@
 
 S3::S3() {
 
-  innerRadius = 1.1*cm;
+  innerRadius = 0.2*cm;
+  //innerRadius = 1.1*cm;
   outerRadius = 3.5*cm;
   thickness = 300.0*um;
 

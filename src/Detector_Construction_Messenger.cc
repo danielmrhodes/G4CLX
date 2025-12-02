@@ -91,8 +91,8 @@ Detector_Construction_Messenger::Detector_Construction_Messenger(Detector_Constr
   target_cmd = new G4UIcmdWithAString("/Geometry/Target/StandardTarget",this);
   target_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,
 				 G4ApplicationState::G4State_Idle);
-  target_cmd->SetCandidates("48Ti Ti48 48ti ti48 208Pb Pb208 208pb pb208 196Pt Pt196 196pt pt196 194Pt Pt194 194pt pt194 110Pd Pd110 110pd pd110 197Au Au197 197au au197");
-  target_cmd->SetGuidance("Construct a standard target: 208Pb, 48Ti, 196Pt, 110Pd, or 197Au");
+  target_cmd->SetCandidates("48Ti Ti48 48ti ti48 208Pb Pb208 208pb pb208 196Pt Pt196 196pt pt196 194Pt Pt194 194pt pt194 110Pd Pd110 110pd pd110 197Au Au197 197au au197 dsam DSAM");
+  target_cmd->SetGuidance("Construct a standard target: 208Pb, 48Ti, 196Pt, 110Pd, 197Au, or dsam");
 
   step_cmd = new G4UIcmdWithADoubleAndUnit("/Geometry/Target/StepSize",this);
   step_cmd->AvailableForStates(G4ApplicationState::G4State_PreInit,

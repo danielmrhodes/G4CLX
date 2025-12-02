@@ -11,22 +11,22 @@
 #include "TVector3.h"
 #include "TMath.h"
 
-//#include "/path/to/G4TCX/include/Data_Format.hh"
-#include "/opt/G4TCX/include/Data_Format.hh"
+//#include "/path/to/G4CLX/include/Data_Format.hh"
+#include "/home/rhodes25/programs/G4CLX/include/Data_Format.hh"
 
 ////These should match the parameters defined in the simulation input////
 //These correspond to the input file Examples/Macros/full.mac
 //Masses in MeV/c^2
 
-const int beamZ = 48;
-const double beam_mass = 98626.9;
+const int beamZ = 36;
+const double beam_mass = 80025.2;
 
 //You should reduce this value by the energy loss in the target
 //MeV
-const double beam_en = 265;
+const double beam_en = 256;
   
-const int targZ = 22;
-const double targ_mass = 44652.0;
+const int targZ = 6;
+const double targ_mass = 11177.9;
 
 //Silicon detector z-offsets (downstream and upstream) (cm)
 double DS_Offset = 3.0;
@@ -37,7 +37,7 @@ const double beam_X = 0.0;
 const double beam_Y = 0.0;
 
 //Tigress configuration. 0 for high-efficiency (detectors forward), 1 for figh Peak-to-Total (detectors back)
-const int tigConfig = 1;
+const int tigConfig = 0;
 
 //Tigress Z-offset (cm)
 double Tigress_Offset = 0.0; 
@@ -198,7 +198,7 @@ TVector3 tigPosVec[2][64][9];
 void FillPositonVectors() {
 
   std::ifstream file;
-  file.open("/opt/G4TCX/positions.txt",std::ios::in);
+  file.open("/home/rhodes25/programs/G4CLX/positions.txt",std::ios::in);
 
   std::string line;
   double x,y,z;
@@ -217,7 +217,7 @@ void FillPositonVectors() {
   }
 
   std::ifstream file1;
-  file1.open("/opt/G4TCX/positionsBack.txt",std::ios::in);
+  file1.open("/home/rhodes25/programs/G4CLX/positionsBack.txt",std::ios::in);
   
   for(int i=0;i<64;i++) {
     for(int j=0;j<9;j++) {

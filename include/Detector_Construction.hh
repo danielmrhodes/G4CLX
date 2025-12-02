@@ -42,6 +42,7 @@ public:
   
   G4Material* GetTargetMaterial() {return target_mat;}
   G4double GetTargetThickness() {return target_thickness;}
+  G4double GetTargetDensity() {return target_density;}
 
   G4double GetUS_Offset() {return US_Offset;}
   G4double GetDS_Offset() {return DS_Offset;}
@@ -88,6 +89,7 @@ private:
   G4bool place_tigress;
   G4bool place_s3;
   G4bool place_target;
+  G4bool dsam;
 
   G4bool check; //surface overlap check
   

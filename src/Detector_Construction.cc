@@ -38,6 +38,7 @@ Detector_Construction::Detector_Construction() {
   place_s3 = false;
   place_target = false;
   check = false;
+  dsam = false;
 
   for(int i=0;i<16;i++)
     tigressDets.push_back(i);
@@ -171,13 +172,18 @@ void Detector_Construction::PlaceS3() {
 
 void Detector_Construction::PlaceTarget() {
 
-  //Target material (isotopically pure)
-  target_mat = new G4Material("target_mat",target_density,1); //Bulk material
-  G4Element* target_ele = new G4Element("target_ele","target_symbol",1); //Element
-  G4Isotope* target_iso = new G4Isotope("target_iso",target_Z,target_Z+target_N,target_mass); //Isotope
-  target_ele->AddIsotope(target_iso,1.0);
-  target_mat->AddElement(target_ele,1.0);
-    
+  if(dsam) {
+    target_mat =  new G4Material("target_mat",target_Z,target_mass,target_density);
+  }
+  else {
+    //Target material (isotopically pure)
+    target_mat = new G4Material("target_mat",target_density,1); //Bulk material
+    G4Element* target_ele = new G4Element("target_ele","target_symbol",1); //Element
+    G4Isotope* target_iso = new G4Isotope("target_iso",target_Z,target_Z+target_N,target_mass); //Isotope
+    target_ele->AddIsotope(target_iso,1.0);
+    target_mat->AddElement(target_ele,1.0);
+  }
+  
   G4Tubs* solid_target = new G4Tubs("Target_Sol",0*cm,target_radius,
 				    target_thickness/2.0,0.0*deg,360.0*deg);
 
@@ -227,6 +233,24 @@ void Detector_Construction::PlaceTarget() {
 		      logic_world,false,0,check);
     
   }
+  if(dsam) {//make thick gold backing
+
+    G4Material* gold_mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Au");
+
+    G4double gold_width = 14.917*um;
+    G4Tubs* goldS = new G4Tubs("GoldLayerS",0*cm,target_radius,gold_width/2.0,0.0*deg,360.0*deg);
+    G4LogicalVolume* goldL = new G4LogicalVolume(goldS,gold_mat,"GoldLayerL",0,0,uLim);
+
+    G4VisAttributes* vis2 = new G4VisAttributes(G4Colour::Yellow());
+    vis2->SetVisibility(true);
+    vis2->SetForceSolid(true);
+    goldL->SetVisAttributes(vis2);
+
+   new G4PVPlacement(0,G4ThreeVector(0,0,(target_thickness + gold_width)/2.0),goldL,"GoldLayer",
+		      logic_world,false,0,check); 
+
+  }
+
   
   return;
 }
@@ -329,6 +353,15 @@ void Detector_Construction::SetTarget(G4String target) {
     target_density = 19.3*g/cm3;
     target_mass = 196.97*g/mole;
     target_thickness = 984*nm;
+    target_radius = 0.5*cm;
+  }
+  else if(target == "dsam" || target == "DSAM") {
+    dsam = true;
+    target_density = (0.5/0.0002165)*mg/(cm*cm*cm); //2.31 g/cm3
+    target_Z = 6;
+    target_N = 6; //not used
+    target_mass = 12.011*g/mole;
+    target_thickness = 2.165*um; //0.5 mg/cm2
     target_radius = 0.5*cm;
   }
   else

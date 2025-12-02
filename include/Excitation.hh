@@ -45,6 +45,8 @@ private:
   void RenormalizeSimple();
   G4bool CanFeedConsidered(G4int index);
   
+  void AddProcesses(G4ParticleDefinition* def, G4bool can_decay);
+
   Excitation_Messenger* messenger;
   Polarization* polar;
   const G4bool proj;

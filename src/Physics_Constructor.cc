@@ -41,8 +41,13 @@
 
 #include "G4eplusAnnihilation.hh"
 
+//#include "G4Decay.hh"
+
 #include "G4hIonisation.hh"
+#include "G4BraggIonModel.hh"
 #include "G4ionIonisation.hh"
+#include "G4AtimaEnergyLossModel.hh"
+#include "G4AtimaFluctuations.hh"
 #include "G4IonParametrisedLossModel.hh"
 #include "G4LindhardSorensenIonModel.hh"
 #include "G4NuclearStopping.hh"
@@ -265,28 +270,37 @@ void Physics_Constructor::ConstructProcess() {
   // generic ion
   particle = G4GenericIon::GenericIon();
   G4ionIonisation* ionIoni = new G4ionIonisation();
-  //ionIoni->SetEmModel(new G4LindhardSorensenIonModel());
+  //ionIoni->SetStepFunction(0.05,0.05*um); 
+  //ionIoni->SetEmModel(new G4BraggIonModel(),0);
+  //ionIoni->SetEmModel(new G4LindhardSorensenIonModel(),1);
   
-  //ph->RegisterProcess(hmsc, particle);
+  ionIoni->SetEmModel(new G4BraggIonModel(),0);
+  ionIoni->SetEmModel(new G4AtimaEnergyLossModel(),1);
+  //ionIoni->SetEmModel(new G4LindhardSorensenIonModel(),2);
+  //ionIoni->SetEmModel(new G4IonParametrisedLossModel(),1);
+  ionIoni->SetFluctModel(new G4AtimaFluctuations());
+  
+  ph->RegisterProcess(hmsc, particle);
   ph->RegisterProcess(ionIoni, particle);
   if(nullptr != pnuc) { ph->RegisterProcess(pnuc, particle); }
   ph->RegisterProcess(new G4StepLimiter(),particle);
-
+  //ph->RegisterProcess(new G4Decay(),particle);
+  
   // muons, hadrons, ions
   G4EmBuilder::ConstructCharged(hmsc, pnuc);
 
   // extra configuration
   G4EmModelActivator mact(GetPhysicsName());
-
-  //G4ParticleTable* table = G4ParticleTable::GetParticleTable();
-  G4IonTable* table = (G4IonTable*)(G4ParticleTable::GetParticleTable()->GetIonTable());
   
-  G4ParticleDefinition* bi209 = table->GetIon(83,209,0.0);
-  bi209->SetPDGLifeTime(-1.0*ps);
+  //Turn off ground state decays
+  G4IonTable* table = G4IonTable::GetIonTable();
+  for(G4int zz = 1;zz<100;zz++) {
+    for(G4int nn = 1;nn<200;nn++) {
+      G4ParticleDefinition* nuc = table->GetIon(zz,zz+nn,0.0);
+      nuc->SetPDGLifeTime(-1.0*ps);
+    }
+  }
   
-  G4ParticleDefinition* ge76 = table->GetIon(32,76,0.0);
-  ge76->SetPDGLifeTime(-1.0*ps);
-
   return;
 }
 
