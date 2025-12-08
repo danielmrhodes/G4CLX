@@ -80,7 +80,7 @@ private:
 
   inline G4bool Intersects(const G4ThreeVector& dir, const G4ThreeVector& S3pos);
 
-  void UpdateReaction();
+  G4double UpdateReaction();
   
   Primary_Generator_Messenger* messenger;
   MODE mode;

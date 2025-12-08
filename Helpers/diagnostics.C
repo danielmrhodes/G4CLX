@@ -1,14 +1,14 @@
 #include "/home/rhodes25/programs/G4CLX/include/Data_Format.hh"
-void diagnostics(std::string input_filename = "info-tmp.dat",
-		 std::string output_filename = "info-tmp.root") {
+void diagnostics(std::string input_filename = "info.dat",
+		 std::string output_filename = "info.root") {
 
   if(!strcmp(input_filename.c_str(),output_filename.c_str())) {
     std::cout << "Give your input and output files different names" << std::endl;
     return;
   }
 
-  const int nStatesP = 19;
-  const int nStatesR = 5;
+  const int nStatesP = 6;
+  const int nStatesR = 10;
 
   TH1* hevt = new TH1D("hevt","Event Number",10000,0.0,50000000.0);
   

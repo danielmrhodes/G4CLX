@@ -14,18 +14,18 @@
 ////These should match the parameters defined in the simulation input////
 //These correspond to the input file Examples/Macros/full.mac
 
-const int beamZ = 48;
-const double beam_mass = 98626.9; // MeV/c^2
+const int beamZ = 50;
+const double beam_mass = 107.9*931.5; // MeV/c^2
 
 //You should reduce this value by the energy loss in the target
-const double beam_en = 265.0; // MeV
+const double beam_en = 430.0; // MeV
   
-const int targZ = 22;
-const double targ_mass = 44652.0; // MeV/c^2
+const int targZ = 78;
+const double targ_mass = 195.9*931.5; // MeV/c^2
 
 //Silicon detector z-offsets (downstream and upstream)
-double DS_Offset = 2.6; // cm 
-double US_Offset = 3.4; // cm
+double DS_Offset = 3.0; // cm 
+double US_Offset = 3.0; // cm
 
 //Beam spot position
 const double beam_X = 0.0; // cm 
