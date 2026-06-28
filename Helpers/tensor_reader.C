@@ -102,6 +102,7 @@ void ReadTensorFile(std::string fn, std::vector<double>& energies, std::vector<d
 }
 
 void tensor_reader(int index = 1, int k=0, int kappa=0, bool norm=false) {
+  gStyle->SetOptStat(0);
   
   if(index < 1) {
     std::cout << "index must be larger than 0" << std::endl;
@@ -138,7 +139,7 @@ void tensor_reader(int index = 1, int k=0, int kappa=0, bool norm=false) {
   int numT = thetas.size();
   
   TGraph2D* g = new TGraph2D(numT*numE);
-  g->SetName(Form("gT%02d",index));
+  g->SetName(Form("gT%02d_k%d_kp%d",index,k,kappa));
   
   if(norm)
     g->SetTitle(Form("State %d Polarization Tensor Component %d %d; Energy (MeV); Theta (rad); Value",index,k,kappa));
@@ -159,13 +160,15 @@ void tensor_reader(int index = 1, int k=0, int kappa=0, bool norm=false) {
   double spT = (thetas.back() - thetas.front())/double(numT - 1);
   double tlow = thetas.front() - spT/2.0;
   double tmax = thetas.back() + spT/2.0;
-  
-  TH2D* h = new TH2D(Form("hT%02d",index),"tmp",numE,elow,emax,numT,tlow,tmax);
 
+  tlow *= TMath::RadToDeg();
+  tmax *= TMath::RadToDeg();
+  
+  TH2D* h = new TH2D(Form("hT%02d_k%d_kp%d",index,k,kappa),"tmp",numE,elow,emax,numT,tlow,tmax);
   if(norm)
-    h->SetTitle(Form("State %d Polarization Tensor Component %d %d; Energy (MeV); ThetaCM (rad); Value",index,k,kappa));
+    h->SetTitle(Form("State %d Polarization Tensor Component %d %d; Energy (MeV); ThetaCM (deg); Value",index,k,kappa));
   else
-    h->SetTitle(Form("State %d Statistical Tensor Component %d %d; Energy (MeV); ThetaCM (rad); Value",
+    h->SetTitle(Form("State %d Statistical Tensor Component %d %d; Energy (MeV); ThetaCM (deg); Value",
 		     index,k,kappa));
 
   int off00 = GetOffset(index,0,0)*numE*numT;
@@ -174,14 +177,18 @@ void tensor_reader(int index = 1, int k=0, int kappa=0, bool norm=false) {
     double en = energies[i];
    
     for(int j=0;j<numT;j++) {
-      double th = thetas[j];
+      double th = thetas[j]*TMath::RadToDeg();
       
       double val = values[offset + j*numE + i];
       if(norm)
 	val /= values[off00 + j*numE + i];
       
       g->SetPoint(i*numT + j,en,th,val);
-      h->Fill(en,th,val);
+      
+      //h->Fill(en,th,val);
+      int bin = h->FindBin(en,th);
+      h->SetBinContent(bin,val);
+      //h->SetBinError(bin,0.0);
       
     }
   }

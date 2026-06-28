@@ -96,8 +96,11 @@ void prob_reader(int index = 0) {
   double tlow = thetas.front() - spT/2.0;
   double tmax = thetas.back() + spT/2.0;
   
+  tlow *= TMath::RadToDeg();
+  tmax *= TMath::RadToDeg();
+
   TH2D* h = new TH2D(Form("hP%02d",index),
-		     Form("State %d Excitation Probabilities; Energy (MeV); ThetaCM (rad); Probability",index),
+		     Form("State %d Excitation Probabilities; Energy (MeV); ThetaCM (deg); Probability",index),
 		     numE,elow,emax,numT,tlow,tmax);
   
   for(int i=0;i<numE;i++) {
@@ -105,11 +108,14 @@ void prob_reader(int index = 0) {
 
     for(int j=0;j<numT;j++) {
     
-      double th = thetas[j];
+      double th = thetas[j]*TMath::RadToDeg();
       double p = probs[index*numE*numT + j*numE + i];
-      
       g->SetPoint(i*numT + j,en,th,p);
-      h->Fill(en,th,p);
+      
+      //h->Fill(en,th,p);
+      int bin = h->FindBin(en,th);
+      h->SetBinContent(bin,p);
+      //h->SetBinError(bin,0.0);
     }
   }
 
